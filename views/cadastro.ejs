@@ -1,0 +1,25 @@
+<%- include partials/header.ejs %>
+
+<body>
+<%- include partials/navbar.ejs %>
+<div class="container">
+    <div class="card" id="formulario-venda">
+        <div class="card-header">
+            <h4 ALIGN="CENTER" class="text-black-50" style="text-transform: uppercase">CADASTRO DE USUARIO</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" action="/cadastrouser">
+                <label for="user">Novo usuario:</label>
+                <input type="text" id="user" name="user" required> <br>
+                <label for="password">Nova senha:</label>
+                <input type="password" id="password" name="password" minlength="6" maxlength="10" required><br>
+                <label for="seg">Código de segurança:</label>
+                <input type="password" id="seg" name="seg" required><br>
+                <input type="submit" id="bot" class="btn btn-outline-dark" value="Cadastrar">
+            </form>
+        </div>
+
+    </div>
+</div>
+</body>
+<%- include partials/footer.ejs %>

@@ -1,0 +1,24 @@
+<%- include partials/header.ejs %>
+
+<body>
+
+    <%- include partials/navbar.ejs %>
+
+    <div class="container">
+        <div class="card" id="formulario-pergunta">
+            <div class="card-header">
+                <h4 align="center" class="text-black-50">Seja bem vindo!</h4>
+                <h4 align="center" class="text-black-50">O que deseja realizar?</h4>
+            </div>
+            <div class="card-body">
+                <div class="btn-group btn-block btn-lg">
+                    <button class="btn btn-outline-dark" onclick="window.location.href = '/venda'">VENDA</button>
+                    <button class="btn btn-outline-dark" onclick="window.location.href = '/inserir'">INSERIR</button>
+                    <button class="btn btn-outline-dark" onclick="window.location.href= '/histvenda'">HISTÓRICO DE VENDA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<%- include partials/footer.ejs %>

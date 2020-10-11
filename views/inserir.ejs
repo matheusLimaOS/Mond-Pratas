@@ -1,0 +1,240 @@
+<%- include partials/header.ejs %>
+<body>
+<%- include partials/navbar.ejs %>
+<div class="container">
+    <div class="card" id="formulario-venda">
+        <div class="card-header">
+            <h4 ALIGN="CENTER" class="text-black-50" style="text-transform: uppercase">INSERIR</h4>
+        </div>
+        <div class="card-body">
+            <form id="form" method="post" action="/inserir">
+                <label for="idc">Digite o ID do Produto(Caso seja produto novo, deixar em branco):</label>
+                <input type="number" onchange="myfunc()" id="idc" min="1" name="idc"> <BR>
+                <script>
+                    function myfunc(){let idc= document.getElementById("idc");
+                        let idc2 = idc.value.toLowerCase();
+                        let qtd = document.getElementById("qtd");
+                        let val = document.getElementById("val");
+                        let tam = document.getElementById("tam");
+                        let tbody = document.getElementById("tbody");
+                        let tr = tbody.childNodes;
+                        let td = tr.childNodes;
+                        let find = false;
+
+                        for (let i=1;i<tbody.childNodes.length;i=i+2){
+                            tr=tbody.childNodes[i];
+                            td=tr.childNodes;
+
+                            let value = td[1].childNodes[0].nodeValue.toLowerCase();
+
+                            if(parseInt(value)===parseInt(idc2)){
+                                find=true;
+                                let qtd2 = td[9].childNodes[0].nodeValue;
+                                let val2 = td[7].childNodes[0].nodeValue;
+                                let tam2 = td[5].childNodes[0].nodeValue
+
+                                qtd.value = parseInt(qtd2)+1;
+                                qtd.min = parseInt(qtd2);
+                                val.value = parseInt(val2);
+                                tam.value = parseInt(tam2);
+
+                            }
+                            if(value.indexOf(idc2)===0){
+                                tr.style.display = "table-row";
+                            }
+                            else {
+                                tr.style.display = "none";
+                            }
+                        }
+                        if (idc.value !== '') {
+                            if(!find) {
+                                let malu = document.getElementById('maluco');
+                                let bot = document.getElementById('bot');
+                                malu.className = 'alert alert-danger';
+                                malu.role = 'alert';
+                                malu.innerHTML = 'ID não encontrado'
+                                malu.style = 'margin: 15px 0px 0px 0px';
+                                bot.disabled = true;
+                            } else {
+                                let malu = document.getElementById('maluco');
+                                let bot = document.getElementById('bot');
+                                malu.className = 'alert alert-success';
+                                malu.role = 'alert';
+                                malu.innerHTML = 'ID encontrado!'
+                                malu.style = 'margin: 15px 0px 0px 0px';
+
+                                bot.disabled = false;
+                            }
+                        }
+                        else{
+                            let malu = document.getElementById('maluco');
+                            let bot = document.getElementById('bot');
+                            malu.className = ' ';
+                            malu.role = ' ';
+                            malu.innerHTML = ' '
+                            malu.style = 'margin: 15px 0px 0px 0px';
+
+                            bot.disabled=false;
+
+                        }
+                    }
+                    document.getElementById("idc").addEventListener("keyup", function (){
+                        let idc= document.getElementById("idc");
+                        let idc2 = idc.value.toLowerCase();
+                        let qtd= document.getElementById("qtd");
+                        let val= document.getElementById("val");
+                        let tbody=document.getElementById("tbody");
+                        let tr=tbody.childNodes;
+                        let td=tr.childNodes;
+                        let find=false;
+
+                        for (let i=1;i<tbody.childNodes.length;i=i+2){
+                            tr=tbody.childNodes[i];
+                            td=tr.childNodes;
+
+                            let value = td[1].childNodes[0].nodeValue.toLowerCase();
+
+                            if(parseInt(value)===parseInt(idc2)){
+                                find=true;
+                                let qtd2 = td[9].childNodes[0].nodeValue;
+                                let val2 = td[7].childNodes[0].nodeValue;
+
+                                qtd.value = parseInt(qtd2)+1;
+                                qtd.min = parseInt(qtd2);
+                                val.value = parseInt(val2);
+
+                            }
+                            if(value.indexOf(idc2)===0 || idc2==''){
+                                tr.style.display = "table-row";
+                            }
+                            else {
+                                tr.style.display = "none";
+                            }
+                        }
+                        if (idc.value != '') {
+                            if(!find) {
+                                let malu = document.getElementById('maluco');
+                                let bot = document.getElementById('bot');
+                                malu.className = 'alert alert-danger';
+                                malu.role = 'alert';
+                                malu.innerHTML = 'ID não encontrado'
+                                malu.style = 'margin: 15px 0px 0px 0px';
+                                bot.disabled = true;
+                            } else {
+                                let malu = document.getElementById('maluco');
+                                let bot = document.getElementById('bot');
+                                malu.className = 'alert alert-success';
+                                malu.role = 'alert';
+                                malu.innerHTML = 'ID encontrado!'
+                                malu.style = 'margin: 15px 0px 0px 0px';
+
+                                bot.disabled = false;
+                            }
+                        }
+                        else{
+                            let malu = document.getElementById('maluco');
+                            let bot = document.getElementById('bot');
+                            malu.className = ' ';
+                            malu.role = ' ';
+                            malu.innerHTML = ' '
+                            malu.style = 'margin: 15px 0px 0px 0px';
+
+                            bot.disabled=false;
+
+                        }
+                    })
+                </script>
+                <script>
+                    function salvar(){
+                        let qtd = document.getElementById("qtd");
+                        let desc = document.getElementById("desc");
+                        let idc = document.getElementById("idc");
+                        if(desc.value==="" && idc.value===""){
+                            alert('INSIRA A DESCRIÇÃO DO PRODUTO OU O ID DO PRODUTO');
+                        }
+                        else if(parseInt(qtd.value)<parseInt(qtd.min)){
+                            alert('QUANTIDADE INSERIDA INVALIDA!');
+                        }
+                        else{
+                            form = document.getElementById("form");
+                            form.submit();
+                        }
+                    }
+                </script>
+                <label for="desc">Descrição do produto:</label>
+                <input type="text" id="desc" name="desc"> <br>
+                <script>
+                    document.getElementById("desc").addEventListener("keyup", function (){
+                        let desc= document.getElementById("desc");
+                        desc = desc.value.toLowerCase();
+                        let qtd= document.getElementById("qtd");
+                        let val= document.getElementById("val");
+                        let tbody=document.getElementById("tbody");
+                        let tr=tbody.childNodes;
+                        let td=tr.childNodes;
+                        let find=false;
+
+                        for (let i=1;i<tbody.childNodes.length;i=i+2){
+                            tr=tbody.childNodes[i];
+                            td=tr.childNodes;
+                            let value = td[3].childNodes[0].nodeValue.toLowerCase();
+
+                            if(value.localeCompare(desc)===0){
+                                find=true;
+                                let qtd2 = td[9].childNodes[0].nodeValue;
+                                let val2 = td[7].childNodes[0].nodeValue;
+
+                                qtd.value = parseInt(qtd2);
+                                qtd.min=parseInt(qtd2);
+                                val.value = parseInt(val2);
+
+                            }
+                            if(value.indexOf(desc)===0){
+                                tr.style.display = "table-row";
+                            }
+                            else {
+                                tr.style.display = "none";
+                            }
+                        }
+
+                    })
+                </script>
+                <label for="tam">Digite o tamanho do Produto:</label>
+                <input type="number" id="tam" name="tam" min="1" value=1> <br>
+                <label for="val">Digite o valor do Produto:</label>
+                <input type="number" id="val" name="val" min="1" value=1> <br>
+                <label for="qtd">Digite a quantidade a inserir:</label>
+                <input type="number" id="qtd" name="qtd" value="0" min="1"><br>
+            </form>
+            <button id="bot" class="btn btn-outline-dark" onclick="salvar()">INSERIR</button>
+            <div id='maluco'>
+            </div>
+        </div>
+        <div id="scroll">
+            <table class="table table-hover text-uppercase table-light table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col"> ID </th>
+                    <th scope="col"> Descrição </th>
+                    <th scope="col"> Tamanho </th>
+                    <th scope="col"> Valor </th>
+                    <th scope="col"> Quantidade </th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <% for(var i=0; i<results.length; i++) { %>
+                    <tr>
+                        <td scope="row"><%= results[i].ID %> </td>
+                        <td><%= results[i].descricao %> </td>
+                        <td><%= results[i].tamanho %> </td>
+                        <td><%= results[i].valor %> </td>
+                        <td><%= results[i].quantidade %> </td>
+                    </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<%- include partials/footer.ejs %>

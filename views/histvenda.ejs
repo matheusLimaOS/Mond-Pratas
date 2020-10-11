@@ -1,0 +1,73 @@
+<%- include partials/header.ejs %>
+<body>
+    <%- include partials/navbar.ejs %>
+    <div class="container">
+        <div class="card" id="formulario-venda">
+            <div class="card-header">
+                <h4 ALIGN="CENTER">HISTÒRICO DE VENDAS</h4>
+            </div>
+            <div>
+                <label style="margin: 5px;font-weight: bold" for="pesquisa">PESQUISA:</label>
+                <input type="text" id="pesquisa"><br>
+            </div>
+            <div id="scrollv">
+                <table class="table table-hover text-uppercase table-light table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col"> ID </th>
+                            <th scope="col"> ID Produto </th>
+                            <th scope="col"> DESCRIÇÃO </th>
+                            <th scope="col"> Quantidade vendido </th>
+                            <th scope="col"> Valor vendido </th>
+                            <th scope="col"> Usuário </th>
+                            <th scope="col"> Hora da venda </th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    <% for(var i=0; i<results.length; i++) { %>
+                    <tr>
+                        <td><%= results[i].ID_venda %> </td>
+                        <td><%= results[i].ID_produto %> </td>
+                        <td><%= results[i].descricao_prod%> </td>
+                        <td><%= results[i].qtd_vendido %> </td>
+                        <td><%= results[i].valorvendido %> </td>
+                        <td style="text-transform: none"><%= results[i].user %></td>
+                        <td><%= results[i].horavenda %> UTC</td>
+                    </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+
+                <script>
+                    let tbody = document.getElementById("tbody");
+                    document.getElementById("pesquisa").addEventListener("keyup", function (){
+                        let busca = document.getElementById("pesquisa").value;
+
+                        busca=busca.toLowerCase();
+
+                        for (let i = 1; i < tbody.childNodes.length; i++) {
+                            let find = false;
+                            let tr = tbody.childNodes[i];
+                            let td = tr.childNodes;
+
+                            for (j=1;j<td.length;j=j+2){
+                                let value = td[j].childNodes[0].nodeValue.toLowerCase();
+                                if(value.indexOf(busca)===0){
+                                    find=true;
+                                }
+                            }
+
+                            if (find) {
+                                tr.style.display = "table-row";
+                            } else {
+                                tr.style.display = "none";
+                            }
+                            i++;
+                        }
+                    })
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+<%- include partials/footer.ejs %>
