@@ -6,7 +6,6 @@ const session = require("express-session");
 const authMethod = require("./middlewares/authMethod");
 const connection = require("./database");
 const produto = require("./APIs/produto");
-let nome;
 let prod = new Array(100);
 let i=0;
 let tam;
@@ -29,7 +28,7 @@ app.use('/',produto);
 
 //Sessões
 app.use(session({
-    secret: "mond_land", cookie: { maxAge: 60*1000}
+    secret: "mond_land", cookie: { maxAge: 60*10000}
 }))
 
 // GET
@@ -49,7 +48,7 @@ app.get("/index",authMethod,(req, res) => {
     res.render("index");
 });
 app.get("/venda",authMethod,(req, res) => {
-    res.render('vendas');
+    res.render('vendas',{user : req.session.user.username});
 });
 app.get("/histvenda",authMethod,(req,res) => {
     let arr = new Array(100);

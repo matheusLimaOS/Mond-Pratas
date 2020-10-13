@@ -25,6 +25,8 @@
                 <div id="escolha">
                 </div>
 
+                <input id="malu" hidden value=<%= user%> >
+
                 <div id='maluco'>
                 </div>
             </div>
@@ -222,17 +224,18 @@
                         let val = document.getElementById("val").value;
                         let escolha = document.getElementById("escolha").value;
                         let descri = document.getElementById("desc").value;
+                        let user = document.getElementById("malu").value;
                         let prod = {
                             ID: id,
                             descricao: descri,
                             quant: qtd,
                             valor: val,
-                            escolha: escolha
+                            escolha: escolha,
+                            user: user
                         }
 
                         axios.put("http://localhost:8080/produto/" + id,prod).then(data => {
-                            console.log(data.status);
-                            if(data.status===201){
+                            if(data.status===200){
                                 document.getElementById("maluco").style = "margin-top : 20px"
                                 document.getElementById("maluco").className = "alert alert-success";
                                 document.getElementById("maluco").role = "alert";
@@ -257,9 +260,37 @@
                                 document.getElementById("maluco").role = "alert";
                                 document.getElementById("maluco").innerHTML = "Quantidade maior que a disponivel em estoque";
                             }
+                            if(error.toString().indexOf('500')!==-1){
+                                document.getElementById("maluco").style = "margin-top : 20px"
+                                document.getElementById("maluco").className = "alert alert-danger";
+                                document.getElementById("maluco").role = "alert";
+                                document.getElementById("maluco").innerHTML = "Erro na aplicação por favor, contate o desenvolvedor!";
+                            }
                         })
                     }
                 </script> <!-- Efetua venda ou remoção -->
+                <script>
+                    document.getElementById("desc").addEventListener("keyup", function (){
+                        let desc= document.getElementById("desc");
+                        desc = desc.value.toLowerCase();
+                        let tbody=document.getElementById("tbody");
+                        let tr=tbody.childNodes[1];
+                        let td=tr.childNodes;
+
+                        for (let i=1;i<tbody.childNodes.length;i++){
+                            tr=tbody.childNodes[i];
+                            td=tr.childNodes;
+                            let value = td[1].childNodes[0].nodeValue.toLowerCase();
+
+                            if(value.indexOf(desc)===0){
+                                tr.style.display = "table-row";
+                            }
+                            else {
+                                tr.style.display = "none";
+                            }
+                        }
+                    })
+                </script> <!-- Script de busca pela descrição -->
             </div>
         </div>
     </div>

@@ -11,27 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4ae12dec-597b-48d7-9b97-3475167a6962" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mond-Pratas" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/APIs/produto.js" beforeDir="false" afterPath="$PROJECT_DIR$/APIs/produto.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/cli-boxes/boxes.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cli-boxes/boxes.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/cli-boxes/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cli-boxes/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/cli-boxes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cli-boxes/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/cli-boxes/license" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cli-boxes/license" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/cli-boxes/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cli-boxes/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/cli-boxes/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cli-boxes/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/dot-prop/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/dot-prop/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/dot-prop/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/dot-prop/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/dot-prop/license" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/dot-prop/license" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/dot-prop/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/dot-prop/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/dot-prop/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/dot-prop/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/update-notifier/check.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/update-notifier/check.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/update-notifier/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/update-notifier/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/update-notifier/license" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/update-notifier/license" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/update-notifier/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/update-notifier/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/update-notifier/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/update-notifier/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/inserir.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/inserir.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middlewares/authMethod.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/authMethod.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/vendas.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/vendas.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -63,7 +46,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Área de Trabalho/APIDEGAMES" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -135,6 +118,7 @@
       <workItem from="1599411939872" duration="30000" />
       <workItem from="1602396890142" duration="2106000" />
       <workItem from="1602438087114" duration="27334000" />
+      <workItem from="1602566633208" duration="3418000" />
     </task>
     <servers />
   </component>
