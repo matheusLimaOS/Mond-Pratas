@@ -13,8 +13,6 @@
     <list default="true" id="4ae12dec-597b-48d7-9b97-3475167a6962" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/APIs/produto.js" beforeDir="false" afterPath="$PROJECT_DIR$/APIs/produto.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/authMethod.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/authMethod.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/vendas.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/vendas.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -119,6 +117,8 @@
       <workItem from="1602396890142" duration="2106000" />
       <workItem from="1602438087114" duration="27334000" />
       <workItem from="1602566633208" duration="3418000" />
+      <workItem from="1602609206976" duration="1536000" />
+      <workItem from="1602618081392" duration="4708000" />
     </task>
     <servers />
   </component>

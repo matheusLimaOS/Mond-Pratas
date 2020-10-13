@@ -67,6 +67,7 @@ app.put("/produto/:id",async (req,res) => {
     }
 
     if(qtdf<0){
+        console.log(qtdf);
         res.status(409);
         res.json({});
     }
