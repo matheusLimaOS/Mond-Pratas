@@ -7,172 +7,26 @@
                 <h4 ALIGN="CENTER" class="text-black-50" style="text-transform: uppercase"> VENDA </h4>
             </div>
             <div class="card-body">
-                <form method="post" action="/carrinho">
-                    <label for="id">Digite o ID do Produto:</label>
-                    <input type="number" onchange="myfunc()" id="id" name="idc" value=<%= idc%> min="1"  > <BR>
-                    <label for="desc">Digite a Descrição do Produto </label>
-                    <input type="text" id="desc" name="desc"> <br>
-                    <script>
-                        function myfunc(){
-                            let idc= document.getElementById("id");
-                            let idc2 = idc.value.toLowerCase();
-                            let qtd= document.getElementById("qtd");
-                            let val= document.getElementById("val");
-                            let tbody=document.getElementById("tbody");
-                            let tr=tbody.childNodes;
-                            let td=tr.childNodes;
-                            let find=false;
+                <label for="ID" id="labelid" hidden>ID do Produto:</label>
+                <input type="number" id="ID" name="ID" style="margin-bottom: 10px" disabled hidden><br id="br" hidden>
 
-                            for (let i=1;i<tbody.childNodes.length;i=i+2){
-                                tr=tbody.childNodes[i];
-                                td=tr.childNodes;
+                <label for="desc">Descrição do Produto:</label>
+                <input type="text" id="desc" name="desc" ><BR>
 
-                                let value = td[1].childNodes[0].nodeValue.toLowerCase();
+                <label for="val" id="labelval" hidden>Valor do Produto:</label>
+                <input type="number" id="val" name="val" hidden><br id="br1" hidden>
 
-                                if(parseInt(value)===parseInt(idc2)){
-                                    find=true;
-                                    let qtd2 = td[9].childNodes[0].nodeValue;
-                                    let val2 = td[7].childNodes[0].nodeValue;
+                <label for="qtd" id="labelqtd" hidden>Quantidade vendida</label>
+                <input type="number" id="qtd" name="qtd" value="1" hidden><br id="br2" hidden>
 
-                                    qtd.max = parseInt(qtd2);
-                                    val.value = parseInt(val2);
+                <button id="button" hidden></button>
+                <button id="buttoncancel" onclick="Cancelar()" hidden></button>
 
-                                }
-                                if(value.indexOf(idc2)===0){
-                                    tr.style.display = "table-row";
-                                }
-                                else {
-                                    tr.style.display = "none";
-                                }
-                            }
+                <div id="escolha">
+                </div>
 
-                            if(!find) {
-                                let malu=document.getElementById('maluco');
-                                let bot=document.getElementById('bot');
-                                malu.className='alert alert-danger';
-                                malu.role='alert';
-                                malu.innerHTML='ID não encontrado'
-                                malu.style='margin: 15px 0px 0px 0px';
-                                bot.disabled=true;
-                            }
-                            else{
-                                let malu=document.getElementById('maluco');
-                                let bot=document.getElementById('bot');
-                                malu.className='alert alert-success';
-                                malu.role='alert';
-                                malu.innerHTML='ID encontrado!'
-                                malu.style='margin: 15px 0px 0px 0px';
-
-                                bot.disabled=false;
-                            }
-                        }
-                        document.getElementById("id").addEventListener("keyup", function (){
-                            let idc= document.getElementById("id");
-                            let idc2 = idc.value.toLowerCase();
-                            let qtd= document.getElementById("qtd");
-                            let val= document.getElementById("val");
-                            let tbody=document.getElementById("tbody");
-                            let tr=tbody.childNodes;
-                            let td=tr.childNodes;
-                            let find=false;
-
-                            for (let i=1;i<tbody.childNodes.length;i=i+2){
-                                tr=tbody.childNodes[i];
-                                td=tr.childNodes;
-
-                                let value = td[1].childNodes[0].nodeValue.toLowerCase();
-
-                                if(parseInt(value)===parseInt(idc2)){
-                                    find=true;
-                                    let qtd2 = td[9].childNodes[0].nodeValue;
-                                    let val2 = td[7].childNodes[0].nodeValue;
-
-                                    qtd.max = parseInt(qtd2);
-                                    val.value = parseInt(val2);
-
-                                }
-                                if(value.indexOf(idc2)===0){
-                                    tr.style.display = "table-row";
-                                }
-                                else {
-                                    tr.style.display = "none";
-                                }
-                            }
-
-                            if(!find) {
-                                let malu=document.getElementById('maluco');
-                                let bot=document.getElementById('bot');
-                                malu.className='alert alert-danger';
-                                malu.role='alert';
-                                malu.innerHTML='ID não encontrado'
-                                malu.style='margin: 15px 0px 0px 0px';
-                                bot.disabled=true;
-                            }
-                            else{
-                                let malu=document.getElementById('maluco');
-                                let bot=document.getElementById('bot');
-                                malu.className='alert alert-success';
-                                malu.role='alert';
-                                malu.innerHTML='ID encontrado!'
-                                malu.style='margin: 15px 0px 0px 0px';
-
-                                bot.disabled=false;
-                            }
-                        })
-                    </script>
-                    <script>
-                        document.getElementById("desc").addEventListener("keyup", function (){
-                            let desc= document.getElementById("desc");
-                            desc = desc.value.toLowerCase();
-                            let idc4 = document.getElementById("id");
-                            let qtd= document.getElementById("qtd");
-                            let val= document.getElementById("val");
-                            let tbody=document.getElementById("tbody");
-                            let tr=tbody.childNodes;
-                            let td=tr.childNodes;
-                            let find=0;
-
-                            for (let i=1;i<tbody.childNodes.length;i=i+2){
-                                tr=tbody.childNodes[i];
-                                td=tr.childNodes;
-                                let value = td[3].childNodes[0].nodeValue.toLowerCase();
-
-                                if(value.indexOf(desc)===0){
-                                    if (find===0){
-                                        let idc3 = td[1].childNodes[0].nodeValue;
-                                        let qtd2 = td[9].childNodes[0].nodeValue;
-                                        let val2 = td[7].childNodes[0].nodeValue;
-
-                                        qtd.max=parseInt(qtd2);
-                                        val.value = parseInt(val2);
-                                        idc4.value = parseInt(idc3);
-                                    }
-                                    tr.style.display = "table-row";
-                                    find = parseInt(find) + 1;
-                                }
-                                else {
-                                    tr.style.display = "none";
-                                }
-                            }
-
-                        })
-                    </script>
-                    <label for="qtd">Digite a quantidade vendida:</label>
-                    <input type="number" id="qtd" name="qtd" value="1" max=<%= quant %> min="1"><br>
-                    <label for="val">Digite o valor do Produto:</label>
-                    <input type="number" id="val" name="val" min="0" value=<%= val1 %> > <br>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radio" id="radio" value="1" checked>
-                        <label class="form-check-label" for="radio">VENDER</label>
-                    </div>
-                    <div style="margin-bottom: 7px" class="form-check">
-                        <input class="form-check-input" type="radio" name="radio" id="radio2" value="2">
-                        <label class="form-check-label" for="radio2">REMOVER</label>
-                    </div>
-                    <input type="submit" id="bot" class="btn btn-outline-dark">
-                    <div id='maluco'>
-                    </div>
-                </form>
+                <div id='maluco'>
+                </div>
             </div>
             <div id="scroll">
                 <table class="table table-hover text-uppercase table-light table-bordered">
@@ -183,25 +37,232 @@
                             <th scope="col"> Tamanho </th>
                             <th scope="col"> Valor </th>
                             <th scope="col"> Quantidade </th>
+                            <th scope="col"> Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tbody">
-                        <% for(var i=0; i<results.length; i++) { %>
-                            <%if(results[i].quantidade===0){%>
-                                <%continue;%>
-                            <%}%>
-                            <tr>
-                                <td scope="row"><%= results[i].ID %> </td>
-                                <td><%= results[i].descricao %> </td>
-                                <td><%= results[i].tamanho %> </td>
-                                <td><%= results[i].valor %> </td>
-                                <td><%= results[i].quantidade %> </td>
-                            </tr>
-                        <% } %>
                     </tbody>
                 </table>
+                <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+                <script>
+                    function vender(id) {
+                        let val = document.getElementById("val");
+                        let idc = document.getElementById("ID");
+                        let desc = document.getElementById("desc");
+                        let button = document.getElementById("button");
+                        let buttoncancel = document.getElementById("buttoncancel");
+
+                        document.getElementById("qtd").hidden = null;
+                        document.getElementById("labelqtd").hidden = null;
+                        document.getElementById("labelval").hidden = null;
+                        document.getElementById("labelid").hidden = null;
+                        document.getElementById("br").hidden = null;
+                        document.getElementById("br1").hidden = null;
+                        document.getElementById("br2").hidden = null;
+                        document.getElementById("escolha").value = 1;
+
+                        idc.hidden = null;
+                        idc.value = id;
+
+                        desc.disabled = true;
+                        val.hidden=null;
+
+                        axios.get("http://localhost:8080/produto/" + id).then(produto => {
+                            let prod = produto.data.produtos[0];
+                            val.value = prod.valor;
+                            desc.value = prod.descricao.toString().toUpperCase();
+                            idc.value = prod.ID;
+                        })
+
+                        button.className = "btn btn-outline-dark";
+                        button.hidden = null;
+                        button.innerHTML = "Vender";
+
+                        buttoncancel.className = "btn btn-outline-danger";
+                        buttoncancel.innerHTML = "Cancelar";
+                        buttoncancel.hidden = null;
+                        buttoncancel.style = "margin-left: 10px";
+
+                        button.addEventListener("click",function (){
+                            efetuar(id);
+                        })
+
+                        form.appendChild(button);
+                        form.appendChild(buttoncancel);
+
+                    }
+                </script> <!-- Clique no botão vender TABELA -->
+                <script>
+                    async function remover(id) {
+                        await Cancelar();
+                        let idc = document.getElementById("ID");
+                        let desc = document.getElementById("desc");
+                        let button = document.getElementById("button");
+                        let buttoncancel = document.getElementById("buttoncancel");
+
+                        document.getElementById("qtd").hidden = null;
+                        document.getElementById("labelqtd").hidden = null;
+                        document.getElementById("labelid").hidden = null;
+                        document.getElementById("br").hidden = null;
+                        document.getElementById("br2").hidden = null;
+                        document.getElementById("escolha").value = -1;
+
+                        idc.hidden = null;
+                        idc.value = id;
+
+                        desc.disabled = true;
+
+                        axios.get("http://localhost:8080/produto/" + id).then(produto => {
+                            let prod = produto.data.produtos[0];
+                            val.value = prod.valor;
+                            desc.value = prod.descricao.toString().toUpperCase();
+                            idc.value = prod.ID;
+                        })
+
+                        button.className = "btn btn-outline-dark";
+                        button.hidden = null;
+                        button.innerHTML = "Remover";
+
+                        buttoncancel.className = "btn btn-outline-danger";
+                        buttoncancel.innerHTML = "Cancelar";
+                        buttoncancel.hidden = null;
+                        buttoncancel.style = "margin-left: 10px";
+
+                        button.addEventListener("click",function (){
+                            efetuar(id);
+                        })
+
+                    }
+                </script> <!-- Clique no botão remover TABELA -->
+                <script>
+                    axios.get("http://localhost:8080/produtos").then(produtos => {
+                        let produto = produtos.data.produtos;
+                        let table = document.getElementById("tbody");
+
+                        produto.forEach(prod => {
+                            let tr = document.createElement("tr");
+                            let tdid = document.createElement("td");
+                            let tddesc = document.createElement("td");
+                            let tdtam = document.createElement("td");
+                            let tdquant = document.createElement("td");
+                            let tdval = document.createElement("td");
+                            let tdbutton = document.createElement("td");
+                            let sellbutton = document.createElement("button");
+                            let rembutton = document.createElement("button");
+
+                            sellbutton.innerHTML = "Vender";
+                            rembutton.innerHTML = "Remover";
+
+                            sellbutton.style = "margin-right: 5px";
+
+                            sellbutton.className = "btn btn-outline-dark";
+                            rembutton.className = "btn btn-outline-dark";
+
+                            sellbutton.addEventListener("click",function (){
+                                vender(prod.ID);
+                            })
+                            rembutton.addEventListener("click",function (){
+                                remover(prod.ID);
+                            })
+
+                            tdid.innerHTML = prod.ID;
+                            tddesc.innerHTML = prod.descricao;
+                            tdtam.innerHTML = prod.tamanho;
+                            tdquant.innerHTML = prod.quantidade;
+                            tdval.innerHTML = prod.valor;
+
+                            tdbutton.appendChild(sellbutton);
+                            tdbutton.appendChild(rembutton);
+
+                            tr.appendChild(tdid);
+                            tr.appendChild(tddesc);
+                            tr.appendChild(tdtam);
+                            tr.appendChild(tdval);
+                            tr.appendChild(tdquant);
+                            tr.appendChild(tdbutton);
+                            table.appendChild(tr);
+
+                        })
+                    }).catch(error => {
+                        if(error.toString().indexOf("404") !== -1){
+                            let divmalu = document.getElementById("maluco");
+
+                            divmalu.innerHTML = "Nenhum produto cadastrado!";
+                            divmalu.className = "alert alert-danger";
+                            divmalu.role = "alert";
+                            divmalu.style = "margin-top: 15px";
+                        }
+                    })
+                </script> <!-- Carrega dados da Tabela -->
+                <script>
+                    function Cancelar(){
+                        document.getElementById("ID").hidden = true;
+                        document.getElementById("val").hidden = true;
+                        document.getElementById("qtd").hidden = true;
+                        document.getElementById("button").hidden = true;
+                        document.getElementById("buttoncancel").hidden = true;
+
+                        document.getElementById("maluco").hidden = true;
+
+                        document.getElementById("labelid").hidden = true;
+                        document.getElementById("labelqtd").hidden = true;
+                        document.getElementById("labelval").hidden = true;
+
+                        document.getElementById("br").hidden = true;
+                        document.getElementById("br1").hidden = true;
+                        document.getElementById("br2").hidden = true;
+
+                        document.getElementById("desc").disabled = false;
+                        document.getElementById("desc").value = '';
+                    }
+                </script> <!-- Botão Cancelar -->
+                <script>
+                    function efetuar(id) {
+                        let qtd = document.getElementById("qtd").value;
+                        let val = document.getElementById("val").value;
+                        let escolha = document.getElementById("escolha").value;
+                        let descri = document.getElementById("desc").value;
+                        let prod = {
+                            ID: id,
+                            descricao: descri,
+                            quant: qtd,
+                            valor: val,
+                            escolha: escolha
+                        }
+
+                        axios.put("http://localhost:8080/produto/" + id,prod).then(data => {
+                            console.log(data.status);
+                            if(data.status===201){
+                                document.getElementById("maluco").style = "margin-top : 20px"
+                                document.getElementById("maluco").className = "alert alert-success";
+                                document.getElementById("maluco").role = "alert";
+                                document.getElementById("maluco").innerHTML = "Produto colocado no carrinho! Para concluir a venda vá para o carrinho";
+                            }
+                            if(data.status===201){
+                                document.getElementById("maluco").style = "margin-top : 20px"
+                                document.getElementById("maluco").className = "alert alert-success";
+                                document.getElementById("maluco").role = "alert";
+                                document.getElementById("maluco").innerHTML = "Produto removido com sucesso!";
+                            }
+                        }).catch(error => {
+                            if(error.toString().indexOf('403')!==-1){
+                                document.getElementById("maluco").style = "margin-top : 20px"
+                                document.getElementById("maluco").className = "alert alert-danger";
+                                document.getElementById("maluco").role = "alert";
+                                document.getElementById("maluco").innerHTML = "Para realização de operações com o valor zerado use o botão remover";
+                            }
+                            if(error.toString().indexOf('409')!==-1){
+                                document.getElementById("maluco").style = "margin-top : 20px"
+                                document.getElementById("maluco").className = "alert alert-danger";
+                                document.getElementById("maluco").role = "alert";
+                                document.getElementById("maluco").innerHTML = "Quantidade maior que a disponivel em estoque";
+                            }
+                        })
+                    }
+                </script> <!-- Efetua venda ou remoção -->
             </div>
         </div>
     </div>
 </body>
 <%- include partials/footer.ejs %>
+

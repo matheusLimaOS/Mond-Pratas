@@ -1,28 +1,15 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const mysql = require("mysql");
 const sha1 = require("js-sha1");
 const session = require("express-session");
 const authMethod = require("./middlewares/authMethod");
+const connection = require("./database");
+const produto = require("./APIs/produto");
 let nome;
 let prod = new Array(100);
 let i=0;
 let tam;
-
-//criando config. da conexão com o banco de dados
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "159375",
-    database: "mondpratas"
-});
-
-// conectando com o banco de dados
-connection.connect(function (err) {
-    if(err) console.error('Erro ao realizar conexão com o BD!' +
-        err.stack);
-});
 
 // Estou dizendo para o Express usar o EJS como View engine
 app.set('view engine','ejs');
@@ -37,6 +24,8 @@ function code(pass){
     hash.update(pass);
     return hash.hex();
 }
+
+app.use('/',produto);
 
 //Sessões
 app.use(session({
@@ -60,24 +49,7 @@ app.get("/index",authMethod,(req, res) => {
     res.render("index");
 });
 app.get("/venda",authMethod,(req, res) => {
-    connection.query("select * from produtos;",
-        function (error, results) {
-            if (results[0] !== undefined) {
-                for (let i=0;i<tam;i++){
-                    results[parseInt(prod[i].id)-1].quantidade = results[parseInt(prod[i].id)-1].quantidade-parseInt(prod[i].quant);
-                }
-                res.render('vendas', {
-                    results: results,
-                    idc: results[0].ID,
-                    quant: results[0].quantidade,
-                    val1: results[0].valor
-                });
-            }
-            else {
-                res.render('vendas', {results: 0, idc: 0, nome: nome, quant: 0, val1: 0});
-            }
-        }
-        );
+    res.render('vendas');
 });
 app.get("/histvenda",authMethod,(req,res) => {
     let arr = new Array(100);
@@ -210,37 +182,30 @@ app.post("/removercarrinho", (req,res) => {
     }
 })
 app.post("/inserir",(req,res) => {
-    if(!logadaum()){
-        res.redirect("/");
+    let idc = req.body.idc;
+    let desc = req.body.desc;
+    let tam = req.body.tam;
+    let val = req.body.val;
+    let qtd = req.body.qtd;
+    verif();
+
+    function verif() {
+        if (idc === '' || idc === undefined) {
+            semid();
+        } else {
+            comid();
+        }
     }
-    else {
-        let idc = req.body.idc;
-        let desc = req.body.desc;
-        let tam = req.body.tam;
-        let val = req.body.val;
-        let qtd = req.body.qtd;
-        verif();
 
-        function verif() {
-            if (idc === '' || idc === undefined) {
-                semid();
-            } else {
-                comid();
-            }
-        }
+    function semid() {
+        connection.query("insert into produtos values(NULL, '" + desc + "' ," + tam + "," + qtd + "," + val + " , DEFAULT);");
+        res.redirect("/index");
+    }
 
-        function semid() {
-            connection.query("insert into produtos values(NULL, '" + desc + "' ," + tam + "," + qtd + "," + val + " , DEFAULT);");
-            res.redirect("/index");
-        }
-
-        function comid() {
-            connection.query("update produtos set quantidade= " + qtd + " where ID= " + idc + ";");
-            connection.query("update produtos set valor= " + val + " where ID = " + idc + ";");
-            res.redirect("/index");
-        }
-
-
+    function comid() {
+        connection.query("update produtos set quantidade= " + qtd + " where ID= " + idc + ";");
+        connection.query("update produtos set valor= " + val + " where ID = " + idc + ";");
+        res.redirect("/index");
     }
 })
 app.post("/login", (req,res) => {
@@ -296,9 +261,6 @@ app.post("/cadastrouser",(req, res) => {
 
 });
 
-function logadaum(){
-    return logado === true;
-}
 function entrou(){
     connection.query("create database IF NOT EXISTS mondpratas");
     connection.query("CREATE TABLE IF NOT EXISTS `mondpratas`.`produtos` (\n" +
