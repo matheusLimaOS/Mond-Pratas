@@ -19,7 +19,6 @@ app.get("/produtos",(req,res) => {
 
 app.get("/produto/:id",(req,res) => {
     let idc = req.params.id;
-    res.status(200);
     connection.query("select * from produtos where ID = " + idc + " ;",
         function (err,data) {
             if(data !== undefined){
@@ -42,52 +41,58 @@ app.put("/produto/:id",async (req,res) => {
     let descri = req.body.descricao;
     let quantb = 1;
     let qtdf = 0 ;
+    let flag = 0 ;
 
-    if(valor === '0' && escolha !== -1){
+   if(valor === '0' && escolha !== -1){
         res.status(403);
         res.json({});
+        flag = 1;
     }
 
-    try{
-       qtdf =  await banco();
-    }
-    catch (error) {
-        console.log(error);
-    }
+    if(flag!==1) {
 
-    function banco() {
-        return new Promise((resolve,reject) => {
-            connection.query("select * from produtos where ID = " + idc + " ;",
-                function (error, data) {
-                    quantb = data[0].quantidade;
-                    qtdf = quantb - parseInt(qtd);
-                    resolve(qtdf);
+        if (qtd < 0) {
+            res.status(405);
+            res.json({});
+        }
+
+        try {
+            qtdf = await banco();
+        } catch (error) {
+            console.log("TESTE" + error);
+        }
+
+        function banco() {
+            return new Promise((resolve, reject) => {
+                connection.query("select * from produtos where ID = " + idc + " ;",
+                    function (error, data) {
+                        quantb = data[0].quantidade;
+                        qtdf = quantb - parseInt(qtd);
+                        resolve(qtdf);
+                        reject(error);
+                    })
             })
-        })
-    }
+        }
 
-    if(qtdf<0){
-        console.log(qtdf);
-        res.status(409);
-        res.json({});
-    }
-    else if(escolha !== -1) {
-        connection.query("insert into carrinho values(NULL," + idc + ", '" + descri + "' , " + valor +  ", " + qtd + ", '" + user +"' )",
-            function (error,data){
-                if(error){
-                    res.status(500);
-                    res.json({});
-                }
-                else{
-                    res.status(200);
-                    res.json({});
-                }
-            });
-    }
-    else{
-        connection.query("update produtos set quantidade = " + qtdf + " where ID = " + idc + ";");
-        res.status(201);
-        res.json({});
+        if (qtdf < 0) {
+            res.status(409);
+            res.json({});
+        } else if (escolha !== -1) {
+            connection.query("insert into carrinho values(NULL," + idc + ", '" + descri + "' , " + valor + ", " + qtd + ", '" + user + "' )",
+                function (error, data) {
+                    if (error) {
+                        res.status(500);
+                        res.json({});
+                    } else {
+                        res.status(200);
+                        res.json({});
+                    }
+                });
+        } else {
+            connection.query("update produtos set quantidade = " + qtdf + " where ID = " + idc + ";");
+            res.status(201);
+            res.json({});
+        }
     }
 })
 

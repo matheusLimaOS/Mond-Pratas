@@ -48,7 +48,7 @@ app.get("/index",authMethod,(req, res) => {
     res.render("index");
 });
 app.get("/venda",authMethod,(req, res) => {
-    res.render('vendas',{user : req.session.user.username});
+    res.render('venda',{user : req.session.user.username});
 });
 app.get("/histvenda",authMethod,(req,res) => {
     let arr = new Array(100);

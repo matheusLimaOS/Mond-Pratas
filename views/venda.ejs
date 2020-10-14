@@ -53,6 +53,7 @@
                         let desc = document.getElementById("desc");
                         let button = document.getElementById("button");
                         let buttoncancel = document.getElementById("buttoncancel");
+                        let sellbutton = document.getElementById("sellbutton");
 
                         document.getElementById("qtd").hidden = null;
                         document.getElementById("labelqtd").hidden = null;
@@ -87,8 +88,8 @@
                     }
                 </script> <!-- Clique no botão vender TABELA -->
                 <script>
-                    async function remover(id) {
-                        await Cancelar();
+                    function remover(id) {
+                        Cancelar();
                         let idc = document.getElementById("ID");
                         let desc = document.getElementById("desc");
                         let button = document.getElementById("button");
@@ -149,12 +150,17 @@
                             sellbutton.className = "btn btn-outline-dark";
                             rembutton.className = "btn btn-outline-dark";
 
-                            sellbutton.addEventListener("click",function (){
+                            sellbutton.addEventListener("click",function (e){
+                                e.preventDefault();
                                 vender(product.ID);
                             })
-                            rembutton.addEventListener("click",function (){
+                            rembutton.addEventListener("click",function (e){
+                                e.preventDefault();
                                 remover(product.ID);
                             })
+
+                            sellbutton.id = "sellbutton";
+                            rembutton.id = "rembutton";
 
                             tdid.innerHTML = product.ID;
                             tddesc.innerHTML = product.descricao;
@@ -239,20 +245,26 @@
                                 document.getElementById("maluco").innerHTML = "Produto removido com sucesso!";
                             }
                         }).catch(error => {
-                            console.log(error.toString("409").indexOf());
+                            document.getElementById("maluco").hidden = false;
                             if(error.toString().indexOf('403')!==-1){
                                 document.getElementById("maluco").style = "margin-top : 20px"
                                 document.getElementById("maluco").className = "alert alert-danger";
                                 document.getElementById("maluco").role = "alert";
                                 document.getElementById("maluco").innerHTML = "Para realização de operações com o valor zerado use o botão remover";
                             }
-                            if(error.toString().indexOf('409')!==-1){
+                            else if(error.toString().indexOf('405')!==-1){
+                                document.getElementById("maluco").style = "margin-top : 20px"
+                                document.getElementById("maluco").className = "alert alert-danger";
+                                document.getElementById("maluco").role = "alert";
+                                document.getElementById("maluco").innerHTML = "Não é permitido, quantidades menores que zero!";
+                            }
+                            else if(error.toString().indexOf('409')!==-1){
                                 document.getElementById("maluco").style = "margin-top : 20px"
                                 document.getElementById("maluco").className = "alert alert-danger";
                                 document.getElementById("maluco").role = "alert";
                                 document.getElementById("maluco").innerHTML = "Quantidade maior que a disponivel em estoque";
                             }
-                            if(error.toString().indexOf('500')!==-1){
+                            else{
                                 document.getElementById("maluco").style = "margin-top : 20px"
                                 document.getElementById("maluco").className = "alert alert-danger";
                                 document.getElementById("maluco").role = "alert";
