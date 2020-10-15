@@ -6,6 +6,7 @@ const session = require("express-session");
 const authMethod = require("./middlewares/authMethod");
 const connection = require("./database");
 const produto = require("./APIs/produto");
+const carrinho = require("./APIs/carrinho");
 let prod = new Array(100);
 let i=0;
 let tam;
@@ -25,6 +26,7 @@ function code(pass){
 }
 
 app.use('/',produto);
+app.use('/',carrinho);
 
 //Sessões
 app.use(session({
@@ -66,7 +68,7 @@ app.get("/histvenda",authMethod,(req,res) => {
     )
 });
 app.get("/carrinho",authMethod,(req,res) => {
-    res.render("carrinho", {prod: prod, tam: i, sum1: 0, sum2: 0});
+    res.render("carrinho", {user: req.session.user.username});
 })
 app.get("/vendaconcluida",authMethod,(req,res) =>  {
     verif();

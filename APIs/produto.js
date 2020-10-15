@@ -42,6 +42,7 @@ app.put("/produto/:id",async (req,res) => {
     let quantb = 1;
     let qtdf = 0 ;
     let flag = 0 ;
+    let flag2 = 0;
 
    if(valor === '0' && escolha !== -1){
         res.status(403);
@@ -74,30 +75,47 @@ app.put("/produto/:id",async (req,res) => {
             })
         }
 
+        function igual() {
+            return new Promise((resolve, reject) => {
+                connection.query("select * from carrinho where id_produto= " + idc + " and usuario = '"+ user +"';",
+                function (error,data){
+                    if(data[0]!==undefined && data[0] !== []){
+                        resolve(data);
+                    }
+                    else{
+                        resolve(-1);
+                    }
+                })
+            })
+        }
+
         if (qtdf < 0) {
             res.status(409);
             res.json({});
         } else if (escolha !== -1) {
-            connection.query("insert into carrinho values(NULL," + idc + ", '" + descri + "' , " + valor + ", " + qtd + ", '" + user + "' )",
-                function (error, data) {
-                    if (error) {
-                        res.status(500);
-                        res.json({});
-                    } else {
-                        res.status(200);
-                        res.json({});
-                    }
-                });
+            flag2 = await igual();
+            if(flag2 === -1) {
+                connection.query("insert into carrinho values(NULL," + idc + ", '" + descri + "' , " + valor + ", " + qtd + ", '" + user + "' )",
+                    function (error, data) {
+                        if (error) {
+                            res.status(500);
+                            res.json({});
+                        } else {
+                            res.status(200);
+                            res.json({});
+                        }
+                    });
+            }
+            else{
+                let qtd2 = parseInt(flag2[0].prod_quant) + parseInt(qtd);
+                connection.query("update carrinho set prod_quant = " + qtd2 + " where id_carrinho = " + flag2[0].id_carrinho);
+            }
         } else {
             connection.query("update produtos set quantidade = " + qtdf + " where ID = " + idc + ";");
             res.status(201);
             res.json({});
         }
     }
-})
-
-app.patch("/produto/:id", async (req,res) => {
-    req.params
 })
 
 module.exports = app;
