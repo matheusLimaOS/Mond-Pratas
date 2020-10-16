@@ -9,15 +9,15 @@
         </div>
         <div class="card-body">
             <div style="margin-bottom: 20px">
-                <label for="remov">Nº Carrinho:</label>
-                <input type="number" id="remov" name="remov" min="1" value="1">
-                <input type="submit" value="REMOVER"  class="btn btn-outline-dark">
+                <label for="descri">Pesquisar pela descrição:</label>
+                <input type="text" id="descri" name="descri" >
                 <input id="user" value="<%=user%>" hidden>
             </div>
             <div class="btn-group btn-block" >
-                <a class="btn btn-outline-dark" href="/venda" role="button"> CONTINUAR VENDENDO </a>
-                <a class="btn btn-outline-dark" href="/vendaconcluida" role="button">FINALIZAR VENDA</a>
-                <a class="btn btn-outline-dark" href="/limparcarrinho" role="button">LIMPAR CARRINHO</a>
+                <button class="btn btn-outline-dark" onclick="vender()">FINALIZAR VENDA</button>
+                <button class="btn btn-outline-dark" onclick="deletar()" >LIMPAR CARRINHO</button>
+            </div>
+            <div id="maluco">
             </div>
         </div>
         <div id="scroll">
@@ -29,6 +29,7 @@
                         <th scope="col"> Descrição </th>
                         <th scope="col"> Valor </th>
                         <th scope="col"> Quantidade </th>
+                        <th scope="col"> Ações </th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
@@ -40,6 +41,10 @@
                     </tr>
                 </thead>
                 <tbody id="table2">
+                    <tr>
+                        <td id="qtdven">0</td>
+                        <td id="valven">0</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -47,57 +52,166 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+    carregar();
+    function carregar() {
+        axios.get("http://localhost:8080/carrinho/" + document.getElementById("user").value).then(produtos => {
+            let produto = produtos.data.produtos
+            let table = document.getElementById("tbody");
+            let quantvendido = 0;
+            let valorvendido = 0;
 
-    axios.get("http://localhost:8080/carrinho/" + document.getElementById("user").value).then(produtos =>{
-        let produto = produtos.data.produtos
-        let table = document.getElementById("tbody");
-        let quantvendido=0;
-        let valorvendido=0;
+            produto.forEach(product => {
+                let tr = document.createElement("tr");
+                let tdncarrinho = document.createElement("td");
+                let tdidproduto = document.createElement("td");
+                let tddescri = document.createElement("td");
+                let tdprodvalor = document.createElement("td");
+                let tdprodquant = document.createElement("td");
+                let tdbutton = document.createElement("td");
+                let button = document.createElement("button");
 
-        produto.forEach(product => {
-            let tr = document.createElement("tr");
-            let tdncarrinho = document.createElement("td");
-            let tdidproduto = document.createElement("td");
-            let tddescri = document.createElement("td");
-            let tdprodvalor = document.createElement("td");
-            let tdprodquant = document.createElement("td");
+                quantvendido += product.prod_quant;
+                valorvendido += product.prod_valor * product.prod_quant;
+                tdncarrinho.innerHTML = product.id_carrinho;
+                tdidproduto.innerHTML = product.id_produto;
+                tddescri.innerHTML = product.prod_descri;
+                tdprodvalor.innerHTML = product.prod_valor;
+                tdprodquant.innerHTML = product.prod_quant;
+                button.className = "btn btn-outline-dark";
+                button.addEventListener("click",function (){
+                    remover(product.id_produto);
+                })
+                button.innerHTML = "Remover";
 
-            quantvendido += product.prod_quant;
-            valorvendido += product.prod_valor * product.prod_quant;
+                tdbutton.appendChild(button);
+                tr.appendChild(tdncarrinho);
+                tr.appendChild(tdidproduto);
+                tr.appendChild(tddescri);
+                tr.appendChild(tdprodvalor);
+                tr.appendChild(tdprodquant);
+                tr.appendChild(tdbutton);
 
-            tdncarrinho.innerHTML = product.id_carrinho;
-            tdidproduto.innerHTML = product.id_produto;
-            tddescri.innerHTML = product.prod_descri;
-            tdprodvalor.innerHTML = product.prod_valor;
-            tdprodquant.innerHTML = product.prod_quant;
-
-            tr.appendChild(tdncarrinho);
-            tr.appendChild(tdidproduto);
-            tr.appendChild(tddescri);
-            tr.appendChild(tdprodvalor);
-            tr.appendChild(tdprodquant);
-
-            table.appendChild(tr);
+                table.appendChild(tr);
+            })
+            document.getElementById("qtdven").innerHTML = quantvendido;
+            document.getElementById("valven").innerHTML = valorvendido;
+        }).catch(error => {
+            if (error.toString().indexOf("404")) {
+                console.log("Não encontrado!!!");
+            }
         })
-        let table2 = document.getElementById("table2");
-        let tr2 = document.createElement("tr");
-        let tdquantvend = document.createElement("td");
-        let tdvalorvend = document.createElement("td");
+    }
 
-        tdquantvend.innerHTML = quantvendido;
-        tdvalorvend.innerHTML = valorvendido;
+</script> <!-- Carrega dados da Tabela -->
+<script>
+    async function deletar(){
+        axios.delete("http://localhost:8080/carrinho/" + document.getElementById("user").value).then(data => {
+            document.getElementById("maluco").style = "margin-top : 20px"
+            document.getElementById("maluco").className = "alert alert-success";
+            document.getElementById("maluco").role = "alert";
+            document.getElementById("maluco").innerHTML = "Carrinho limpo com sucesso!";
+        }).catch(error => {
+            if (error.toString().indexOf('500')) {
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-danger";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Erro na aplicação por favor, contate o desenvolvedor!";
+            }
+        })
+        await limpartabela();
+        carregar();
+    }
+</script> <!-- Limpar Carrinho --->
+<script>
+    function limpartabela() {
+        let linhas = document.getElementById("tbody").rows;
+        let i,tam=linhas.length;
 
-        tr2.appendChild(tdquantvend);
-        tr2.appendChild(tdvalorvend);
-        table2.appendChild(tr2);
-        
-    }).catch(error => {
-        if(error.toString().indexOf("404")){
-            console.log("Não encontrado!!!");
+        for (i=0; i<tam;i++){
+            document.getElementById("tbody").deleteRow(0);
+        }
+
+        document.getElementById("qtdven").innerHTML = 0;
+        document.getElementById("valven").innerHTML = 0;
+
+    }
+</script> <!-- Limpa a tabela após a limpeza do carrinho -->
+<script>
+    document.getElementById("descri").addEventListener("keyup", function (){
+        let desc= document.getElementById("descri");
+        desc = desc.value.toLowerCase();
+        let tbody=document.getElementById("tbody");
+        let tr=tbody.childNodes[1];
+        let td=tr.childNodes;
+
+        console.log(tr);
+
+        for (let i=1;i<tbody.childNodes.length;i++){
+            tr=tbody.childNodes[i];
+            td=tr.childNodes;
+            let value = td[2].childNodes[0].nodeValue.toLowerCase();
+
+            if(value.indexOf(desc)===0){
+                tr.style.display = "table-row";
+            }
+            else {
+                tr.style.display = "none";
+            }
         }
     })
+</script> <!-- Script de busca pela descrição -->
+<script>
+    async function vender() {
+        await axios.get("http://localhost:8080/carrinho/" + document.getElementById("user").value).then(produtos => {
+            let produto = produtos.data.produtos;
+            produto.forEach(product => {
+                let idc = product.id_produto;
+                let prod = {
+                    descricao: product.prod_descri,
+                    quant: product.prod_quant,
+                    valor: product.prod_valor,
+                    user: document.getElementById("user").value
+                }
 
+                axios.put("http://localhost:8080/produto/carrinho/" + idc, prod).then(async data => {
+                    axios.delete("http://localhost:8080/carrinho/"+ document.getElementById("user").value + "/"+ idc).then(data => {
+                        console.log("DELETADO!");
+                    })
+                    await limpartabela();
+                    await carregar();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.toString().indexOf('409')){
+                        if(error.toString().indexOf('409')!==-1){
+                            document.getElementById("maluco").style = "margin-top : 20px"
+                            document.getElementById("maluco").className = "alert alert-danger";
+                            document.getElementById("maluco").role = "alert";
+                            document.getElementById("maluco").innerHTML = "Um dos itens do carrinho não pode ser vendido: Quantidade maior que a disponivel em estoque!";
+                        }
+                    }
+                })
 
-</script>
+            })
+        }).catch(error => {
+            console.log("Teste2 " + error);
+        })
+        document.getElementById("maluco").style = "margin-top : 20px"
+        document.getElementById("maluco").className = "alert alert-success";
+        document.getElementById("maluco").role = "alert";
+        document.getElementById("maluco").innerHTML = "Venda Finalizada!";
+    }
+</script> <!-- Finaliza a venda -->
+<script>
+    async function remover(id){
+        axios.delete("http://localhost:8080/carrinho/" + document.getElementById("user").value + "/" + id).then(data => {
+            document.getElementById("maluco").style = "margin-top : 20px"
+            document.getElementById("maluco").className = "alert alert-success";
+            document.getElementById("maluco").role = "alert";
+            document.getElementById("maluco").innerHTML = "Item removido do carrinho!";
+        })
+        await limpartabela();
+        await carregar();
+    }
+</script> <!-- Botão remover tabela carrinho -->
 </body>
 <%- include partials/footer.ejs %>
