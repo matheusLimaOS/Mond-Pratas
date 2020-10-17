@@ -6,9 +6,18 @@
             <div class="card-header">
                 <h4 ALIGN="CENTER">HISTÒRICO DE VENDAS</h4>
             </div>
-            <div>
-                <label style="margin: 5px;font-weight: bold" for="pesquisa">PESQUISA:</label>
-                <input type="text" id="pesquisa"><br>
+            <div class="card-body">
+                <div align="left">
+                    <label for="pesquisa">DESCRIÇÃO:</label>
+                    <input type="text" id="pesquisa">
+                </div>
+                <div align="right">
+                    <label for="data">DE:</label>
+                    <input type="date" id="data" onchange="teste()">
+                    <label for="data2">ATÉ:</label>
+                    <input type="date" id="data2" onchange="teste()">
+                </div>
+                <div id="maluco"></div>
             </div>
             <div id="scrollv">
                 <table class="table table-hover text-uppercase table-light table-bordered">
@@ -24,20 +33,97 @@
                         </tr>
                     </thead>
                     <tbody id="tbody">
-                    <% for(var i=0; i<results.length; i++) { %>
-                    <tr>
-                        <td><%= results[i].ID_venda %> </td>
-                        <td><%= results[i].ID_produto %> </td>
-                        <td><%= results[i].descricao_prod%> </td>
-                        <td><%= results[i].qtd_vendido %> </td>
-                        <td><%= results[i].valorvendido %> </td>
-                        <td style="text-transform: none"><%= results[i].user %></td>
-                        <td><%= results[i].horavenda %> UTC</td>
-                    </tr>
-                    <% } %>
                     </tbody>
                 </table>
+                <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+                <script>
+                    axios.get("/histovenda").then(vendas => {
+                        let venda = vendas.data.vendas;
+                        let table = document.getElementById("tbody");
 
+                        venda.forEach(vend => {
+                            let tr = document.createElement("tr");
+                            let tdid = document.createElement("td");
+                            let tdidprod = document.createElement("td");
+                            let tddesc = document.createElement("td");
+                            let tdquant = document.createElement("td");
+                            let tdval = document.createElement("td");
+                            let tduser = document.createElement("td");
+                            let tdhoravenda = document.createElement("td");
+
+                            tdid.innerHTML = vend.ID_venda;
+                            tdidprod.innerHTML = vend.ID_produto;
+                            tddesc.innerHTML = vend.descricao_prod;
+                            tdquant.innerHTML = vend.qtd_vendido;
+                            tdval.innerHTML = vend.valorvendido;
+                            tduser.innerHTML = vend.user;
+                            tdhoravenda.innerHTML = vend.horavenda;
+
+                            tr.appendChild(tdid);
+                            tr.appendChild(tdidprod);
+                            tr.appendChild(tddesc);
+                            tr.appendChild(tdquant);
+                            tr.appendChild(tdval);
+                            tr.appendChild(tduser);
+                            tr.appendChild(tdhoravenda);
+
+                            table.appendChild(tr);
+
+                        })
+                    }).catch(error => {
+                        if (error.toString().indexOf("500")!==-1){
+                            let divmalu = document.getElementById("maluco");
+                            divmalu.innerHTML = "Erro no sistema, Por Favor contate o desenvolvedor";
+                            divmalu.className = "alert alert-danger";
+                            divmalu.role = "alert";
+                            divmalu.style = "margin-top: 15px";
+                        }
+                        if(error.toString().indexOf("404")!==-1){
+                            let divmalu = document.getElementById("maluco");
+                            divmalu.innerHTML = "Nenhuma venda encontrada";
+                            divmalu.className = "alert alert-danger";
+                            divmalu.role = "alert";
+                            divmalu.style = "margin-top: 15px";
+                        }
+                    })
+                    function teste(){
+                        let data = document.getElementById("data").value.toString();
+                        let data2 = document.getElementById("data2").value.toString();
+                        let split = data.split("-");
+                        let split2 = data2.split("-");
+                        let date11 = new Date(parseInt(split[0]),parseInt(split[1])-1,parseInt(split[2]));
+                        let date12;
+                        if (data2===''){
+                            date12 = new Date(parseInt(split[0])+1,parseInt(split[1])-1,parseInt(split[2]));
+                            split[0] = parseInt(split[0]) + 1;
+                            document.getElementById("data2").value = (split[0] +"-"+ split[1] +"-"+ split[2]);
+                        }
+                        else{
+                            date12 = new Date(parseInt(split2[0]), parseInt(split2[1]) - 1, parseInt(split2[2]));
+                        }
+                        let tbody=document.getElementById("tbody");
+                        let tr = tbody.childNodes[1];
+                        let td = tr.childNodes[6].childNodes[0].nodeValue;
+
+                        for (let i=1;i<tbody.childNodes.length;i++) {
+                            tr = tbody.childNodes[i];
+                            td = tr.childNodes[6].childNodes[0].nodeValue;
+                            let table = td.toString();
+                            let splittable = table.split(" ");
+                            let splittable2 = splittable[0].split("/");
+                            let date1 = new Date(parseInt(splittable2[2]),parseInt(splittable2[1])-1,parseInt(splittable2[0]));
+
+                            if(date1 <= date12 && date1 >= date11){
+                                tr.style.display = "table-row";
+                            }
+                            else{
+                                tr.style.display = "none";
+                            }
+
+                        }
+
+                    }
+                </script> <!-- Pesquisa por data -->
                 <script>
                     let tbody = document.getElementById("tbody");
                     document.getElementById("pesquisa").addEventListener("keyup", function (){
@@ -65,7 +151,7 @@
                             i++;
                         }
                     })
-                </script>
+                </script> <!-- Pesquisa por descrição -->
             </div>
         </div>
     </div>

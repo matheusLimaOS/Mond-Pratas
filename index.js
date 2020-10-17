@@ -7,8 +7,7 @@ const authMethod = require("./middlewares/authMethod");
 const connection = require("./database");
 const produto = require("./APIs/produto");
 const carrinho = require("./APIs/carrinho");
-let prod = new Array(100);
-let i=0;
+const vendas = require("./APIs/histvenda");
 let tam;
 
 // Estou dizendo para o Express usar o EJS como View engine
@@ -27,7 +26,7 @@ function code(pass){
 
 app.use('/',produto);
 app.use('/',carrinho);
-
+app.use('/',vendas);
 //Sessões
 app.use(session({
     secret: "mond_land", cookie: { maxAge: 60*10000}
@@ -70,36 +69,6 @@ app.get("/histvenda",authMethod,(req,res) => {
 app.get("/carrinho",authMethod,(req,res) => {
     res.render("carrinho", {user: req.session.user.username});
 })
-app.get("/vendaconcluida",authMethod,(req,res) =>  {
-    verif();
-
-    function verif() {
-        if (tam === 0) {
-            res.redirect("/");
-        }
-    }
-
-    for (let j = 0; j < parseInt(tam); j++) {
-        connection.query("select * from produtos where ID = " + prod[j].id + " ;",
-            function (error,results) {
-                if (parseInt(prod[j].radio) === 1) {
-                    connection.query("insert into vendas values(NULL, " + prod[j].id + " , '"+ prod[j].descri +"' ," + prod[j].quant + " , " + prod[j].valor + ", '" + user + "' , DEFAULT )")
-                    venda(results[0].quantidade, prod[j].quant, prod[j].id);
-                }
-                else{
-                    venda(results[0].quantidade, prod[j].quant, prod[j].id);
-                }
-            }
-        );
-        i = 0;
-        res.redirect('/index');
-    }
-})
-app.get("/limparcarrinho",authMethod,(req,res) => {
-    prod.splice(0, tam);
-    i = tam = 0;
-    res.render("carrinho", {prod: prod, tam: i, sum1: 0, sum2: 0});
-})
 app.get("/inserir",authMethod,(req,res) => {
     connection.query("select * from produtos;",
         function (error, results) {
@@ -112,76 +81,7 @@ app.get("/inserir",authMethod,(req,res) => {
         });
 })
 
-function venda(quantidade,quant,id){
-    connection.query("update produtos set quantidade = " + quantidade + " - " + quant + " where ID = " + id + " ;");
-}
-function Produto(id,descri,tamanho,valor,quant,quantmax,radio){
-    this.id=id;
-    this.descri=descri;
-    this.tamanho=tamanho;
-    this.valor=valor;
-    this.quant=quant;
-    this.quantmax=quantmax;
-    this.radio=radio;
-}
 // POST
-app.post("/carrinho", (req,res) => {
-    if(!logadaum()){
-        res.redirect("/");
-    }
-    else {
-        let idc = req.body.idc;
-        let quant = req.body.qtd;
-        let val = req.body.val;
-        let radio = req.body.radio;
-        let achou=false;
-
-        connection.query("select * from produtos where ID = " + idc + ";",
-            function (error, results) {
-                for(let n=0;n<parseInt(tam);n++){
-                    if(parseInt(prod[n].id)===parseInt(idc) && parseInt(prod[n].radio)===parseInt(radio) && parseInt(prod[n].valor)==parseInt(val)){
-                        prod[n].quant=parseInt(prod[n].quant) + parseInt(quant);
-                        achou=true;
-                    }
-                }
-                if(achou===false) {
-                    prod[i] = new Produto(results[0].ID, results[0].descricao, results[0].tamanho, quant * val, quant, results[0].quantidade, radio);
-                    conti();
-                }
-                else{
-                    res.render("carrinho", {prod: prod, tam: i, sum1: 0, sum2: 0});
-                }
-            }
-        )
-
-        function conti() {
-            i = parseInt(i) + 1;
-            tam = i;
-            res.render("carrinho", {prod: prod, tam: i, sum1: 0, sum2: 0});
-        }
-    }
-})
-app.post("/removercarrinho", (req,res) => {
-    if(!logadaum()){
-        res.redirect("/");
-    }
-    else {
-        let remov = req.body.remov;
-        remov--;
-        cont1();
-
-        function cont1() {
-            prod.splice(remov, 1);
-            cont();
-        }
-
-        function cont() {
-            i--;
-            tam--;
-            res.render("carrinho", {prod: prod, tam: i, sum1: 0, sum2: 0});
-        }
-    }
-})
 app.post("/inserir",(req,res) => {
     let idc = req.body.idc;
     let desc = req.body.desc;
@@ -271,7 +171,8 @@ function entrou(){
         "  `quantidade` INT NOT NULL,\n" +
         "  `valor` DOUBLE NOT NULL,\n" +
         "  `horario` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,\n" +
-        "  PRIMARY KEY (`ID`));\n");
+        "  PRIMARY KEY (`ID`));\n"
+    );
     connection.query("CREATE TABLE IF NOT EXISTS `mondpratas`.`vendas` (\n" +
         "  `ID_venda` INT NOT NULL AUTO_INCREMENT,\n" +
         "  `ID_produto` INT NOT NULL,\n" +
@@ -280,10 +181,21 @@ function entrou(){
         "  `valorvendido` DOUBLE NOT NULL,\n" +
         "  `user` varchar(45) NOT NULL,\n" +
         "  `horavenda` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,\n" +
-        "  PRIMARY KEY (`ID_venda`));\n");
+        "  PRIMARY KEY (`ID_venda`));\n"
+    );
     connection.query("CREATE TABLE IF NOT EXISTS `mondpratas`.`user` (\n" +
         "  `user` VARCHAR(45) NOT NULL,\n" +
-        "  `password` VARCHAR(45) NOT NULL);\n")
+        "  `password` VARCHAR(45) NOT NULL);\n"
+    )
+    connection.query("CREATE TABLE IF NOT EXISTS `mondpratas`.`carrinho` (\n" +
+        "`id_carrinho` INT NOT NULL AUTO_INCREMENT,\n" +
+        "`id_produto` INT NOT NULL,\n" +
+        "`prod_descri` VARCHAR(45) NOT NULL,\n" +
+        "`prod_valor` DOUBLE NOT NULL,\n" +
+        "`prod_quant` INT NOT NULL,\n" +
+        "`usuario` VARCHAR(45) NOT NULL,\n" +
+        "PRIMARY KEY (`id_carrinho`));\n"
+    )
 }
 
 //Colocando no ar
