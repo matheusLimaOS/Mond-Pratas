@@ -1,8 +1,14 @@
 const express = require ("express");
 const app = express.Router();
 const connection = require("../database");
+const session = require("express-session");
+
+app.use(session({
+    secret: "mond_land", cookie: { maxAge: 60*10000}
+}));
 
 app.get("/produtos",(req,res) => {
+    console.log(req.session.user);
     res.status(200);
     connection.query("select * from produtos;",
         function (err,data) {
@@ -127,7 +133,6 @@ app.put("/produto/carrinho/:id",async (req,res) => {
     let valor = req.body.valor;
     let user = req.body.user;
     let descri = req.body.descricao;
-    let quantb = 1;
     let qtdf = 0 ;
 
 
@@ -137,21 +142,9 @@ app.put("/produto/carrinho/:id",async (req,res) => {
     }
 
     try {
-        qtdf = await banco();
+        qtdf = await banco(idc,qtd);
     } catch (error) {
         console.log("TESTE" + error);
-    }
-
-    function banco() {
-        return new Promise((resolve, reject) => {
-            connection.query("select * from produtos where ID = " + idc + " ;",
-                function (error, data) {
-                    quantb = data[0].quantidade;
-                    qtdf = quantb - parseInt(qtd);
-                    resolve(qtdf);
-                    reject(error);
-                })
-        })
     }
 
     if (qtdf < 0) {
@@ -171,6 +164,101 @@ app.put("/produto/carrinho/:id",async (req,res) => {
         }
     }
 })
+
+app.put("/produto/editar/:id", async (req,res) => {
+    let idc = req.params.id;
+    let qtd = req.body.quant;
+    let valor = req.body.valor;
+    let tam = req.body.tamanho;
+    let qtdf;
+
+
+    try{
+        qtdf = await banco2(idc);
+    }
+    catch (error){
+        console.log(error);
+    }
+
+    if (qtd < qtdf) {
+        res.status(409);
+        res.json({});
+    }
+    else {
+        try {
+            await edit(qtd,idc,tam,valor);
+            res.status(200);
+            res.json({});
+        } catch (error) {
+            console.log(error);
+            res.status(500);
+            res.json({});
+        }
+    }
+})
+
+app.post("/produto/",async (req,res) => {
+    let desc = req.body.desc;
+    let tamanho = req.body.tamanho;
+    let quantidade = req.body.quant;
+    let valor = req.body.valor;
+
+    if(desc === '' || tamanho < 0 || quantidade < 0 || valor <= 0 ){
+        res.status("405");
+        res.json({});
+    }
+    else if(await verifica(desc,tamanho) !== -1){
+        res.status("409");
+        res.json({
+            idprods: await verifica(desc,tamanho)
+        });
+    }
+    else{
+        connection.query("insert into produtos values(NULL, '"+ desc +"' , "+ tamanho +", "+ quantidade +", "+ valor +", DEFAULT)",
+            function (error,data){
+                if(error){
+                    console.log(error);
+                    res.status(500);
+                    res.json({});
+                }
+                res.status(200);
+                res.json({});
+            }
+        )
+    }
+})
+
+function verifica(desc,tamanho){
+    return new Promise((resolve, reject) => {
+        connection.query("select * from produtos where descricao like '%" + desc + "%' and tamanho = " + tamanho + " ;",
+            function (error, data) {
+                if (error) {
+                    reject(error);
+                }
+                if(data[0]!== undefined){
+                    resolve(data.ID);
+                }
+                else{
+                    resolve(-1);
+                }
+            }
+        )
+    })
+}
+
+function edit(qtd,idprod,tam,valor){
+    return new Promise((resolve, reject) => {
+        connection.query("update produtos set tamanho = "+ tam + ", quantidade = " + qtd + ", valor = " + valor + " where ID = "+ idprod +" ;",
+            function (error, data) {
+                if (error) {
+                    reject(error);
+                }
+                else{
+                    resolve(1);
+                }
+            });
+    })
+}
 
 function update(qtdf,idprod){
     return new Promise((resolve, reject) => {
@@ -196,6 +284,29 @@ function histvenda(idprod,descriprod,qtdvend,valven,user){
                 else{
                     resolve(1);
                 }
+            })
+    })
+}
+
+function banco(idc,qtd) {
+    return new Promise((resolve, reject) => {
+        connection.query("select * from produtos where ID = " + idc + " ;",
+            function (error, data) {
+                let quantb = data[0].quantidade;
+                let qtdf = quantb - parseInt(qtd);
+                resolve(qtdf);
+                reject(error);
+            })
+    })
+}
+
+function banco2(idc) {
+    return new Promise((resolve, reject) => {
+        connection.query("select * from produtos where ID = " + idc + " ;",
+            function (error, data) {
+                quantb = data[0].quantidade;
+                resolve(quantb);
+                reject(error);
             })
     })
 }

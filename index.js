@@ -8,6 +8,7 @@ const connection = require("./database");
 const produto = require("./APIs/produto");
 const carrinho = require("./APIs/carrinho");
 const vendas = require("./APIs/histvenda");
+const users = require("./APIs/users");
 let tam;
 
 // Estou dizendo para o Express usar o EJS como View engine
@@ -27,6 +28,7 @@ function code(pass){
 app.use('/',produto);
 app.use('/',carrinho);
 app.use('/',vendas);
+app.use('/',users);
 //Sessões
 app.use(session({
     secret: "mond_land", cookie: { maxAge: 60*10000}
@@ -34,7 +36,6 @@ app.use(session({
 
 // GET
 app.get("/",(req, res) => {
-    entrou();
     res.render("login",{tex:"",styl:'margin: 0px 0px 0px 0px',role:'',aler:''});
 });
 app.get("/cadastrouser",(req, res) => {
@@ -52,19 +53,7 @@ app.get("/venda",authMethod,(req, res) => {
     res.render('venda',{user : req.session.user.username});
 });
 app.get("/histvenda",authMethod,(req,res) => {
-    let arr = new Array(100);
-
-    connection.query("SET lc_time_names = 'pt_PT'");
-    connection.query("select ID_venda,ID_produto,descricao_prod,qtd_vendido,valorvendido,user," +
-        "date_format(horavenda,'%d/%m/%y %T') as horavenda from vendas order by horavenda desc,ID_venda desc;",
-        function (error, results) {
-        if(results===undefined)
-            res.render('histvenda', {results: 0});
-        else{
-            res.render('histvenda', {results: results});
-        }
-    }
-    )
+    res.render('histvenda', {results: 0});
 });
 app.get("/carrinho",authMethod,(req,res) => {
     res.render("carrinho", {user: req.session.user.username});
@@ -82,33 +71,6 @@ app.get("/inserir",authMethod,(req,res) => {
 })
 
 // POST
-app.post("/inserir",(req,res) => {
-    let idc = req.body.idc;
-    let desc = req.body.desc;
-    let tam = req.body.tam;
-    let val = req.body.val;
-    let qtd = req.body.qtd;
-    verif();
-
-    function verif() {
-        if (idc === '' || idc === undefined) {
-            semid();
-        } else {
-            comid();
-        }
-    }
-
-    function semid() {
-        connection.query("insert into produtos values(NULL, '" + desc + "' ," + tam + "," + qtd + "," + val + " , DEFAULT);");
-        res.redirect("/index");
-    }
-
-    function comid() {
-        connection.query("update produtos set quantidade= " + qtd + " where ID= " + idc + ";");
-        connection.query("update produtos set valor= " + val + " where ID = " + idc + ";");
-        res.redirect("/index");
-    }
-})
 app.post("/login", (req,res) => {
     user = req.body.user;
     let pass = req.body.password;
@@ -161,42 +123,6 @@ app.post("/cadastrouser",(req, res) => {
     }
 
 });
-
-function entrou(){
-    connection.query("create database IF NOT EXISTS mondpratas");
-    connection.query("CREATE TABLE IF NOT EXISTS `mondpratas`.`produtos` (\n" +
-        "  `ID` INT NOT NULL AUTO_INCREMENT,\n" +
-        "  `descricao` VARCHAR(45) NOT NULL,\n" +
-        "  `tamanho` DOUBLE NOT NULL,\n" +
-        "  `quantidade` INT NOT NULL,\n" +
-        "  `valor` DOUBLE NOT NULL,\n" +
-        "  `horario` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,\n" +
-        "  PRIMARY KEY (`ID`));\n"
-    );
-    connection.query("CREATE TABLE IF NOT EXISTS `mondpratas`.`vendas` (\n" +
-        "  `ID_venda` INT NOT NULL AUTO_INCREMENT,\n" +
-        "  `ID_produto` INT NOT NULL,\n" +
-        "  `descricao_prod` VARCHAR(45) NOT NULL,\n" +
-        "  `qtd_vendido` INT NOT NULL,\n" +
-        "  `valorvendido` DOUBLE NOT NULL,\n" +
-        "  `user` varchar(45) NOT NULL,\n" +
-        "  `horavenda` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,\n" +
-        "  PRIMARY KEY (`ID_venda`));\n"
-    );
-    connection.query("CREATE TABLE IF NOT EXISTS `mondpratas`.`user` (\n" +
-        "  `user` VARCHAR(45) NOT NULL,\n" +
-        "  `password` VARCHAR(45) NOT NULL);\n"
-    )
-    connection.query("CREATE TABLE IF NOT EXISTS `mondpratas`.`carrinho` (\n" +
-        "`id_carrinho` INT NOT NULL AUTO_INCREMENT,\n" +
-        "`id_produto` INT NOT NULL,\n" +
-        "`prod_descri` VARCHAR(45) NOT NULL,\n" +
-        "`prod_valor` DOUBLE NOT NULL,\n" +
-        "`prod_quant` INT NOT NULL,\n" +
-        "`usuario` VARCHAR(45) NOT NULL,\n" +
-        "PRIMARY KEY (`id_carrinho`));\n"
-    )
-}
 
 //Colocando no ar
 app.listen(8080,()=>{console.log("App rodando!");})

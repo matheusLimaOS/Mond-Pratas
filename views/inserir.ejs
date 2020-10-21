@@ -7,209 +7,30 @@
             <h4 ALIGN="CENTER" class="text-black-50" style="text-transform: uppercase">INSERIR</h4>
         </div>
         <div class="card-body">
-            <form id="form" method="post" action="/inserir">
-                <label for="idc">Digite o ID do Produto(Caso seja produto novo, deixar em branco):</label>
-                <input type="number" onchange="myfunc()" id="idc" min="1" name="idc"> <BR>
-                <script>
-                    function myfunc(){let idc= document.getElementById("idc");
-                        let idc2 = idc.value.toLowerCase();
-                        let qtd = document.getElementById("qtd");
-                        let val = document.getElementById("val");
-                        let tam = document.getElementById("tam");
-                        let tbody = document.getElementById("tbody");
-                        let tr = tbody.childNodes;
-                        let td = tr.childNodes;
-                        let find = false;
 
-                        for (let i=1;i<tbody.childNodes.length;i=i+2){
-                            tr=tbody.childNodes[i];
-                            td=tr.childNodes;
+            <label for="idc" id="labelid"  hidden>ID do Produto:</label>
+            <input id="idc" hidden disabled> <BR id="br1" hidden>
 
-                            let value = td[1].childNodes[0].nodeValue.toLowerCase();
+            <label for="desc">Descrição do produto:</label>
+            <input type="text" id="desc" name="desc"> <br>
 
-                            if(parseInt(value)===parseInt(idc2)){
-                                find=true;
-                                let qtd2 = td[9].childNodes[0].nodeValue;
-                                let val2 = td[7].childNodes[0].nodeValue;
-                                let tam2 = td[5].childNodes[0].nodeValue;
+            <label for="tam">Tamanho do Produto:</label>
+            <input type="number" id="tam" name="tam" min="1" value=1> <br>
 
-                                qtd.value = parseInt(qtd2)+1;
-                                qtd.min = parseInt(qtd2);
-                                val.value = parseInt(val2);
-                                tam.value = parseInt(tam2);
+            <label for="val">Valor do Produto:</label>
+            <input type="number" id="val" name="val" min="1" value=1> <br>
 
-                            }
-                            if(value.indexOf(idc2)===0){
-                                tr.style.display = "table-row";
-                            }
-                            else {
-                                tr.style.display = "none";
-                            }
-                        }
-                        if (idc.value !== '') {
-                            if(!find) {
-                                let malu = document.getElementById('maluco');
-                                let bot = document.getElementById('bot');
-                                malu.className = 'alert alert-danger';
-                                malu.role = 'alert';
-                                malu.innerHTML = 'ID não encontrado'
-                                malu.style = 'margin: 15px 0px 0px 0px';
-                                bot.disabled = true;
-                            } else {
-                                let malu = document.getElementById('maluco');
-                                let bot = document.getElementById('bot');
-                                malu.className = 'alert alert-success';
-                                malu.role = 'alert';
-                                malu.innerHTML = 'ID encontrado!'
-                                malu.style = 'margin: 15px 0px 0px 0px';
+            <label for="qtd">Quantidade do Produto:</label>
+            <input type="number" id="qtd" name="qtd" value="0" min="1"><br>
+            <div id="botoes">
+                <button id="bot" class="btn btn-outline-dark" onclick="salvar()">INSERIR</button>
+                <button id="button" onclick="efetuar()" hidden></button>
+                <button id="buttoncancel" onclick="Cancelar()" hidden></button>
+            </div>
 
-                                bot.disabled = false;
-                            }
-                        }
-                        else{
-                            let malu = document.getElementById('maluco');
-                            let bot = document.getElementById('bot');
-                            malu.className = ' ';
-                            malu.role = ' ';
-                            malu.innerHTML = ' '
-                            malu.style = 'margin: 15px 0px 0px 0px';
-
-                            bot.disabled=false;
-
-                        }
-                    }
-                    document.getElementById("idc").addEventListener("keyup", function (){
-                        let idc= document.getElementById("idc");
-                        let idc2 = idc.value.toLowerCase();
-                        let qtd= document.getElementById("qtd");
-                        let val= document.getElementById("val");
-                        let tbody=document.getElementById("tbody");
-                        let tr=tbody.childNodes;
-                        let td=tr.childNodes;
-                        let find=false;
-
-                        for (let i=1;i<tbody.childNodes.length;i=i+2){
-                            tr=tbody.childNodes[i];
-                            td=tr.childNodes;
-
-                            let value = td[1].childNodes[0].nodeValue.toLowerCase();
-
-                            if(parseInt(value)===parseInt(idc2)){
-                                find=true;
-                                let qtd2 = td[9].childNodes[0].nodeValue;
-                                let val2 = td[7].childNodes[0].nodeValue;
-
-                                qtd.value = parseInt(qtd2)+1;
-                                qtd.min = parseInt(qtd2);
-                                val.value = parseInt(val2);
-
-                            }
-                            if(value.indexOf(idc2)===0 || idc2==''){
-                                tr.style.display = "table-row";
-                            }
-                            else {
-                                tr.style.display = "none";
-                            }
-                        }
-                        if (idc.value != '') {
-                            if(!find) {
-                                let malu = document.getElementById('maluco');
-                                let bot = document.getElementById('bot');
-                                malu.className = 'alert alert-danger';
-                                malu.role = 'alert';
-                                malu.innerHTML = 'ID não encontrado'
-                                malu.style = 'margin: 15px 0px 0px 0px';
-                                bot.disabled = true;
-                            } else {
-                                let malu = document.getElementById('maluco');
-                                let bot = document.getElementById('bot');
-                                malu.className = 'alert alert-success';
-                                malu.role = 'alert';
-                                malu.innerHTML = 'ID encontrado!'
-                                malu.style = 'margin: 15px 0px 0px 0px';
-
-                                bot.disabled = false;
-                            }
-                        }
-                        else{
-                            let malu = document.getElementById('maluco');
-                            let bot = document.getElementById('bot');
-                            malu.className = ' ';
-                            malu.role = ' ';
-                            malu.innerHTML = ' '
-                            malu.style = 'margin: 15px 0px 0px 0px';
-
-                            bot.disabled=false;
-
-                        }
-                    })
-                </script>
-                <script>
-                    function salvar(){
-                        let qtd = document.getElementById("qtd");
-                        let desc = document.getElementById("desc");
-                        let idc = document.getElementById("idc");
-                        if(desc.value==="" && idc.value===""){
-                            alert('INSIRA A DESCRIÇÃO DO PRODUTO OU O ID DO PRODUTO');
-                        }
-                        else if(parseInt(qtd.value)<parseInt(qtd.min)){
-                            alert('QUANTIDADE INSERIDA INVALIDA!');
-                        }
-                        else{
-                            form = document.getElementById("form");
-                            form.submit();
-                        }
-                    }
-                </script>
-                <label for="desc">Descrição do produto:</label>
-                <input type="text" id="desc" name="desc"> <br>
-                <script>
-                    document.getElementById("desc").addEventListener("keyup", function (){
-                        let desc= document.getElementById("desc");
-                        desc = desc.value.toLowerCase();
-                        let qtd= document.getElementById("qtd");
-                        let val= document.getElementById("val");
-                        let tbody=document.getElementById("tbody");
-                        let tr=tbody.childNodes;
-                        let td=tr.childNodes;
-                        let find=false;
-
-                        for (let i=1;i<tbody.childNodes.length;i=i+2){
-                            tr=tbody.childNodes[i];
-                            td=tr.childNodes;
-                            let value = td[3].childNodes[0].nodeValue.toLowerCase();
-
-                            if(value.localeCompare(desc)===0){
-                                find=true;
-                                let qtd2 = td[9].childNodes[0].nodeValue;
-                                let val2 = td[7].childNodes[0].nodeValue;
-
-                                qtd.value = parseInt(qtd2);
-                                qtd.min=parseInt(qtd2);
-                                val.value = parseInt(val2);
-
-                            }
-                            if(value.indexOf(desc)===0){
-                                tr.style.display = "table-row";
-                            }
-                            else {
-                                tr.style.display = "none";
-                            }
-                        }
-
-                    })
-                </script>
-                <label for="tam">Digite o tamanho do Produto:</label>
-                <input type="number" id="tam" name="tam" min="1" value=1> <br>
-                <label for="val">Digite o valor do Produto:</label>
-                <input type="number" id="val" name="val" min="1" value=1> <br>
-                <label for="qtd">Digite a quantidade a inserir:</label>
-                <input type="number" id="qtd" name="qtd" value="0" min="1"><br>
-            </form>
-            <button id="bot" class="btn btn-outline-dark" onclick="salvar()">INSERIR</button>
             <div id='maluco'>
             </div>
-        </div>
+        </div> <!-- Formulario -->
         <div id="scroll">
             <table class="table table-hover text-uppercase table-light table-bordered">
                 <thead class="thead-light">
@@ -219,22 +40,256 @@
                     <th scope="col"> Tamanho </th>
                     <th scope="col"> Valor </th>
                     <th scope="col"> Quantidade </th>
+                    <th scope="col" > Ações </th>
                 </tr>
                 </thead>
                 <tbody id="tbody">
-                <% for(var i=0; i<results.length; i++) { %>
-                    <tr>
-                        <td scope="row"><%= results[i].ID %> </td>
-                        <td><%= results[i].descricao %> </td>
-                        <td><%= results[i].tamanho %> </td>
-                        <td><%= results[i].valor %> </td>
-                        <td><%= results[i].quantidade %> </td>
-                    </tr>
-                <% } %>
                 </tbody>
             </table>
-        </div>
+        </div> <!-- Tabela -->
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    carregatabela();
+    function carregatabela() {
+        axios.get("http://localhost:8080/produtos").then(produtos => {
+            let produto = produtos.data.produtos;
+            let table = document.getElementById("tbody");
+
+            produto.forEach(product => {
+                let tr = document.createElement("tr");
+                let tdid = document.createElement("td");
+                let tddesc = document.createElement("td");
+                let tdtam = document.createElement("td");
+                let tdquant = document.createElement("td");
+                let tdval = document.createElement("td");
+                let tdbutton = document.createElement("td");
+                let editbutton = document.createElement("button");
+
+
+                editbutton.innerHTML = "Editar";
+
+                editbutton.className = "btn btn-outline-dark";
+
+                editbutton.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    edit(product.ID);
+                })
+
+                tdid.innerHTML = product.ID;
+                tddesc.innerHTML = product.descricao;
+                tdtam.innerHTML = product.tamanho;
+                tdquant.innerHTML = product.quantidade;
+                tdval.innerHTML = product.valor;
+
+                tdbutton.appendChild(editbutton);
+
+                tr.appendChild(tdid);
+                tr.appendChild(tddesc);
+                tr.appendChild(tdtam);
+                tr.appendChild(tdval);
+                tr.appendChild(tdquant);
+                tr.appendChild(tdbutton);
+                table.appendChild(tr);
+
+            })
+        }).catch(error => {
+            if (error.toString().indexOf("404") !== -1) {
+                let divmalu = document.getElementById("maluco");
+
+                divmalu.innerHTML = "Nenhum produto cadastrado!";
+                divmalu.className = "alert alert-danger";
+                divmalu.role = "alert";
+                divmalu.style = "margin-top: 15px";
+            }
+        })
+    }
+</script> <!-- Carrega dados da Tabela -->
+<script>
+    async function edit(ID) {
+        await Cancelar();
+        let id = document.getElementById("idc");
+        let labelid = document.getElementById("labelid");
+        let br1 = document.getElementById("br1");
+        let tam = document.getElementById("tam");
+        let desc = document.getElementById("desc");
+        let val = document.getElementById("val");
+        let qtd = document.getElementById("qtd");
+        let button = document.getElementById("button");
+        let buttoncancel = document.getElementById("buttoncancel");
+        document.getElementById("bot").hidden = true;
+
+        id.hidden = false;
+        labelid.hidden = false;
+        br1.hidden = false;
+
+        desc.disabled = true;
+
+        axios.get("http://localhost:8080/produto/" + ID).then(produto => {
+            let prod = produto.data.produtos[0];
+            tam.value = prod.tamanho;
+            desc.value = prod.descricao.toString().toUpperCase();
+            val.value = prod.valor;
+            qtd.value = prod.quantidade;
+        })
+
+        id.value = ID;
+
+        button.className = "btn btn-outline-dark";
+        button.hidden = null;
+        button.innerHTML = "Editar";
+        document.getElementById("botoes").style = "margin-top: 10px";
+
+        buttoncancel.className = "btn btn-outline-danger";
+        buttoncancel.innerHTML = "Cancelar";
+        buttoncancel.hidden = null;
+        buttoncancel.style = "margin-left: 10px";
+
+    }
+</script> <!-- Botão Editar -->
+<script>
+    function Cancelar(){
+        let id = document.getElementById("idc");
+        let tam = document.getElementById("tam");
+        let desc = document.getElementById("desc");
+        let val = document.getElementById("val");
+        let qtd = document.getElementById("qtd");
+
+        id.hidden = true;
+
+        document.getElementById("button").hidden = true;
+        document.getElementById("buttoncancel").hidden = true;
+        document.getElementById("maluco").hidden = true;
+        document.getElementById("labelid").hidden = true;
+        document.getElementById("br1").hidden = true;
+
+
+        desc.disabled = false;
+        desc.value = '';
+
+        tam.disabled = false;
+        tam.value = 1;
+
+        val.value = 1;
+
+        qtd.value = 0;
+
+        document.getElementById("bot").hidden = false;
+    }
+</script> <!-- Botão Cancelar -->
+<script>
+    function efetuar() {
+        let qtd = document.getElementById("qtd").value;
+        let val = document.getElementById("val").value;
+        let tam = document.getElementById("tam").value;
+        let id = document.getElementById("idc").value;
+        let prod = {
+            ID: id,
+            quant: qtd,
+            valor: val,
+            tamanho: tam
+        };
+
+        document.getElementById("maluco").hidden = false;
+
+        axios.put("http://localhost:8080/produto/editar/" + id,prod).then(async data => {
+            console.log(data.status);
+            if(data.status===200){
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-success";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Produto editado com sucesso!";
+                await limpartabela();
+                carregatabela();
+            }
+        }).catch(error => {
+            document.getElementById("maluco").hidden = false;
+            if(error.toString().indexOf('403')!==-1){
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-danger";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Para realização de operações com o valor zerado use o botão remover";
+            }
+            else if(error.toString().indexOf('405')!==-1){
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-danger";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Não é permitido, quantidades menores que zero!";
+            }
+            else if(error.toString().indexOf('409')!==-1){
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-danger";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Quantidade menor que a disponivel em estoque, para remover vá para a tela de venda!";
+            }
+            else{
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-danger";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Erro na aplicação por favor, contate o desenvolvedor!";
+            }
+        })
+        prod.ID = null;
+    }
+</script> <!-- Efetua Edição -->
+<script>
+    function limpartabela() {
+        let linhas = document.getElementById("tbody").rows;
+        let i,tam=linhas.length;
+
+        for (i=0; i<tam;i++){
+            document.getElementById("tbody").deleteRow(0);
+        }
+
+    }
+</script> <!-- Limpa a tabela após a limpeza do carrinho -->
+<script>
+    function salvar() {
+        let descri = document.getElementById("desc").value.toString().trim().toUpperCase();
+        let qtd = document.getElementById("qtd").value;
+        let val = document.getElementById("val").value;
+        let tam = document.getElementById("tam").value;
+        let prod = {
+            desc: descri,
+            quant: qtd,
+            valor: val,
+            tamanho: tam
+        };
+
+        document.getElementById("maluco").hidden = false;
+
+        axios.post("http://localhost:8080/produto/",prod).then(async data => {
+            if(data.status === 200){
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-success";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Produto editado com sucesso!";
+                await limpartabela();
+                carregatabela();
+            }
+        }).catch(error => {
+            if (error.toString().indexOf("500")){
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-danger";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Erro do sistema, contate o desenvolvedor!";
+            }
+            if(error.toString().indexOf("405")){
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-danger";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Campos preenchidos de forma incorreta!";
+            }
+            if (error.toString().indexOf("409")){
+                document.getElementById("maluco").style = "margin-top : 20px"
+                document.getElementById("maluco").className = "alert alert-danger";
+                document.getElementById("maluco").role = "alert";
+                document.getElementById("maluco").innerHTML = "Produto já cadastrado!";
+            }
+        })
+    }
+</script> <!-- Salva novos produtos -->
+
 </body>
 <%- include partials/footer.ejs %>
