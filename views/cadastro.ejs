@@ -8,18 +8,63 @@
             <h4 ALIGN="CENTER" class="text-black-50" style="text-transform: uppercase">CADASTRO DE USUARIO</h4>
         </div>
         <div class="card-body">
-            <form method="post" action="/cadastrouser">
-                <label for="user">Novo usuario:</label>
-                <input type="text" id="user" name="user" required> <br>
-                <label for="password">Nova senha:</label>
-                <input type="password" id="password" name="password" minlength="6" maxlength="10" required><br>
-                <label for="seg">Código de segurança:</label>
-                <input type="password" id="seg" name="seg" required><br>
-                <input type="submit" id="bot" class="btn btn-outline-dark" value="Cadastrar">
-            </form>
-        </div>
+            <label id="labcad" for="user">Novo usuario:</label>
+            <input type="text" id="user" name="user" required> <br>
 
+            <label id="labcad" for="password">Nova senha:</label>
+            <input type="password" id="password" name="password" minlength="6" maxlength="10" required><br
+
+            <label for="seg">Código de segurança:</label>
+            <input type="password" id="seg" name="seg" required><br>
+
+            <button id="bot" class="btn btn-outline-dark" onclick="cadastro()">CADASTRAR</button>
+            <div id='maluco'>
+
+            </div>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function cadastro() {
+            let user = document.getElementById("user").value;
+            let pass = document.getElementById("password").value;
+            let codigo = document.getElementById("seg").value;
+            let usuario = {
+                user: user,
+                pass: pass,
+                codigo: codigo
+            }
+            let divmalu = document.getElementById("maluco");
+            axios.post("http://localhost:8080/users/new", usuario).then(data => {
+                if (data.status === 200) {
+                    divmalu.innerHTML = "Usuario Cadastado com sucesso!Você será redirecionado para a Tela de Login";
+                    divmalu.className = "alert alert-success";
+                    divmalu.role = "alert";
+                    divmalu.style = "margin-top: 15px";
+                    setTimeout(function(){ window.location.href = "/" }, 1500);
+                }
+            }).catch(error => {
+                if (error.toString().indexOf("401") !== -1) {
+                    divmalu.innerHTML = "Usuario já cadastrado!";
+                    divmalu.className = "alert alert-danger";
+                    divmalu.role = "alert";
+                    divmalu.style = "margin-top: 15px";
+                }
+                if (error.toString().indexOf("500") !== -1) {
+                    divmalu.innerHTML = "Erro na aplicação. Contate o desenvolvedor!";
+                    divmalu.className = "alert alert-danger";
+                    divmalu.role = "alert";
+                    divmalu.style = "margin-top: 15px";
+                }
+                if (error.toString().indexOf("400") !== -1) {
+                    divmalu.innerHTML = "Código de segurança inválido!";
+                    divmalu.className = "alert alert-danger";
+                    divmalu.role = "alert";
+                    divmalu.style = "margin-top: 15px";
+                }
+            })
+        }
+    </script> <!-- cadastra usuario -->
 </div>
 </body>
 <%- include partials/footer.ejs %>

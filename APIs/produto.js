@@ -8,7 +8,6 @@ app.use(session({
 }));
 
 app.get("/produtos",(req,res) => {
-    console.log(req.session.user);
     res.status(200);
     connection.query("select * from produtos;",
         function (err,data) {

@@ -32,7 +32,6 @@ app.delete("/carrinho/:user",(req, res) => {
         }
     )
 })
-
 app.delete("/carrinho/:user/:id",(req, res) => {
     let user = req.params.user;
     let idc = req.params.id;

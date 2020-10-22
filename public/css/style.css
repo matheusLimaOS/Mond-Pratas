@@ -19,3 +19,15 @@ body{
 #sele{
     width: auto;
 }
+label{
+    width: 175px;
+}
+#lab{
+    width: 60px;
+}
+#bot{
+    margin-top: 10px;
+}
+#labcad{
+    width: 155px ;
+}

@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const sha1 = require("js-sha1");
 const session = require("express-session");
 const authMethod = require("./middlewares/authMethod");
 const connection = require("./database");
@@ -18,12 +17,6 @@ app.use(express.static('public'));
 // Body parser
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-function code(pass){
-    sha1(pass);
-    let hash = sha1.create();
-    hash.update(pass);
-    return hash.hex();
-}
 
 app.use('/',produto);
 app.use('/',carrinho);
@@ -69,60 +62,6 @@ app.get("/inserir",authMethod,(req,res) => {
             }
         });
 })
-
-// POST
-app.post("/login", (req,res) => {
-    user = req.body.user;
-    let pass = req.body.password;
-
-    connection.query("select * from user where binary user = '" + user + "' ;",
-        function (error,results) {
-            if(results[0]!==undefined){
-                let string = code(pass);
-                if (results[0].password.localeCompare(string)===0){
-                    req.session.user = {
-                        username: user
-                    }
-                    res.redirect("/index");
-
-                }
-                else[
-                    res.render("login",{tex:"Senha incorreta",styl:'margin: 15px 0px 0px 0px',role:'alert',aler:'alert alert-danger'})
-                ]
-            }
-            else{
-                res.render("login",{tex:"Usuario não encontrado",styl:'margin: 15px 0px 0px 0px',role:'alert',aler:'alert alert-danger'});
-            }
-        }
-    )
-
-
-
-})
-app.post("/cadastrouser",(req, res) => {
-    let user = req.body.user;
-    let pass = req.body.password;
-    let seg = req.body.seg;
-
-    if(seg.localeCompare("159375")===0){
-        connection.query("select * from user where user = '" + user + "' ;",
-            function (error,results) {
-                if (results[0] === undefined) {
-                    let string = code(pass);
-                    connection.query("insert into user values( '" + user + "' , '" + string + "' )");
-                    res.render("login",{tex:"Usuario cadastrado",styl:'margin: 15px 0px 0px 0px',role:'alert',aler:'alert alert-success'});
-                }
-                else{
-                    res.render("login",{tex:"Usuario já cadastrado",styl:'margin: 15px 0px 0px 0px',role:'alert',aler:'alert alert-danger'});
-                }
-            }
-        )
-    }
-    else{
-        res.render("login",{tex:"Código de segurança incorreto",styl:'margin: 15px 0px 0px 0px',role:'alert',aler:'alert alert-danger'});
-    }
-
-});
 
 //Colocando no ar
 app.listen(8080,()=>{console.log("App rodando!");})
