@@ -5,7 +5,7 @@ const session = require("express-session");
 const sha1 = require("js-sha1");
 
 app.use(session({
-    secret: "mond_land", cookie: { maxAge: 60*10000}
+    secret: "mond_land", cookie: { maxAge: 60*100000}
 }));
 function code(pass){
     sha1(pass);
@@ -18,14 +18,21 @@ app.post("/users/login",(req, res) => {
     let user = req.body.user;
     let pass = req.body.pass;
 
+    console.log(user + " " + pass);
+
     connection.query("select * from user where binary user = '" + user + "' ;",
         function (error,results) {
+            if(error){
+                res.status(500);
+                res.json({});
+            }
             if(results[0]!==undefined){
                 let string = code(pass);
                 if (results[0].password.localeCompare(string)===0){
                     req.session.user = {
                         username: user
                     }
+                    console.log(req.session.user);
                     res.status(200);
                     res.json({});
                 }
@@ -45,36 +52,44 @@ app.post("/users/new",async (req, res) => {
     let user = req.body.user;
     let pass = req.body.pass;
     let codigo = req.body.codigo;
-    let existe = await verifica(user);
-
-    if(codigo==="159375"){
-        if(existe===1){
-            connection.query("insert into user values('"+ user +"','"+ code(pass) +"');",function (error,data){
-                if(error){
-                    console.log(error);
-                    res.status(500);
-                    res.json({})
-                }
-                else{
-                    res.status(200)
-                    res.json({});
-                }
-            })
-        }
-        else if (existe===-1){
-            res.status(401);
-            res.json({});
-        }
-        else{
-            res.status(500);
-            res.json({});
-        }
+    let existe;
+    try {
+        existe = await verifica(user);
     }
-    else{
-        res.status(400);
+    catch (err){
+        console.log(err);
+    }
+
+    if(user === '' || pass==='' || pass.length<8 || pass[0] === ' '){
+        res.status(405);
         res.json({});
     }
-
+    else {
+        if (codigo === "159375") {
+            if (existe === 1) {
+                connection.query("insert into user values('" + user + "','" + code(pass) + "');",
+                    function (error, data) {
+                        if (error) {
+                            console.log(error);
+                            res.status(500);
+                            res.json({})
+                        } else {
+                            res.status(200)
+                            res.json({});
+                        }
+                    })
+            } else if (existe === -1) {
+                res.status(401);
+                res.json({});
+            } else {
+                res.status(500);
+                res.json({});
+            }
+        } else {
+            res.status(400);
+            res.json({});
+        }
+    }
 })
 
 function verifica(user){

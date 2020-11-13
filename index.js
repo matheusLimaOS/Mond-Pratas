@@ -8,11 +8,20 @@ const produto = require("./APIs/produto");
 const carrinho = require("./APIs/carrinho");
 const vendas = require("./APIs/histvenda");
 const users = require("./APIs/users");
+const cors = require("cors");
 let tam;
 
 // Estou dizendo para o Express usar o EJS como View engine
 app.set('view engine','ejs');
 app.use(express.static('public'));
+app.use((req,res,next)=>{
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE,OPTIONSr');
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+    app.use(cors());
+    next();
+})
+
 
 // Body parser
 app.use(bodyParser.urlencoded({extended: false}));

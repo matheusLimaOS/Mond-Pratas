@@ -3,7 +3,7 @@ function logadaum(req,res,next){
         next();
     }
     else{
-        res.redirect("/");
+        console.log(req.session);
     }
 }
 

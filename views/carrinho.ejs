@@ -180,7 +180,7 @@
                     await limpartabela();
                     await carregar();
                 }).catch(error => {
-                    console.log(error);
+                        console.log(error);
                     if (error.toString().indexOf('409')){
                         if(error.toString().indexOf('409')!==-1){
                             document.getElementById("maluco").style = "margin-top : 20px"
