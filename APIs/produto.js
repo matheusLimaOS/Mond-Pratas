@@ -18,12 +18,12 @@ app.get("/produtos",(req,res) => {
             }
             else{
                 res.status(404);
-                res.json({produtos: data});
+                res.json({});
             }
         })
 })
 
-app.get("/produto/:id",authMethod,(req,res) => {
+app.get("/produto/:id",(req,res) => {
     let idc = req.params.id;
     connection.query("select * from produtos where ID = " + idc + " ;",
         function (err,data) {
@@ -38,7 +38,7 @@ app.get("/produto/:id",authMethod,(req,res) => {
         })
 })
 
-app.put("/produto/:id",authMethod,async (req,res) => {
+app.put("/produto/:id",async (req,res) => {
     let idc = req.params.id;
     let qtd = req.body.quant;
     let valor = req.body.valor;
@@ -130,11 +130,10 @@ app.put("/produto/:id",authMethod,async (req,res) => {
     }
 })
 
-app.put("/produto/carrinho/:id",authMethod,async (req,res) => {
+app.put("/produto/carrinho/:id",async (req,res) => {
     let idc = req.params.id;
     let qtd = req.body.prod_quant;
     let valor = req.body.prod_valor;
-    let user = req.body.usuario;
     let descri = req.body.prod_descri;
     let qtdf = 0 ;
 
@@ -161,8 +160,8 @@ app.put("/produto/carrinho/:id",authMethod,async (req,res) => {
     }
     else {
         try {
+            await histvenda(idc,descri,qtd,valor*qtd);
             await update(qtdf,idc);
-            await histvenda(idc,descri,qtd,valor*qtd,user);
             res.status(200);
             res.json({idc});
         } catch (error) {
@@ -173,7 +172,7 @@ app.put("/produto/carrinho/:id",authMethod,async (req,res) => {
     }
 })
 
-app.put("/produto/editar/:id", authMethod,async (req,res) => {
+app.put("/produto/editar/:id",async (req,res) => {
     let idc = req.params.id;
     let qtd = req.body.quantidade;
     let valor = req.body.valor;
@@ -200,6 +199,7 @@ app.put("/produto/editar/:id", authMethod,async (req,res) => {
                 res.json({});
             } catch (error) {
                 console.log(error);
+
                 res.status(500);
                 res.json({});
             }
@@ -207,7 +207,7 @@ app.put("/produto/editar/:id", authMethod,async (req,res) => {
     }
 })
 
-app.post("/produto/",authMethod,async (req,res) => {
+app.post("/produto/",async (req,res) => {
 
     let desc = req.body.desc;
     let tamanho = req.body.tamanho;
@@ -238,6 +238,21 @@ app.post("/produto/",authMethod,async (req,res) => {
         )
     }
 })
+
+
+function histvenda(idprod,descriprod,qtdvend,valven){
+    return new Promise((resolve, reject) => {
+        connection.query("insert into vendas_itens values(NULL, -1 , "+  idprod +",'"+descriprod+"', "+ qtdvend +","+ valven +");",
+            function (error,data){
+                if(error){
+                    reject(error);
+                }
+                else{
+                    resolve(1);
+                }
+            })
+    })
+}
 
 function verifica(desc,tamanho){
     return new Promise((resolve, reject) => {
@@ -282,20 +297,6 @@ function update(qtdf,idprod){
                     resolve(1);
                 }
             });
-    })
-}
-
-function histvenda(idprod,descriprod,qtdvend,valven,user){
-    return new Promise((resolve, reject) => {
-        connection.query("insert into vendas values(NULL,"+ idprod +", '"+ descriprod +"' , "+ qtdvend +" , "+  valven +", '"+ user +"',DEFAULT);",
-            function (error){
-                if(error){
-                    reject(error);
-                }
-                else{
-                    resolve(1);
-                }
-            })
     })
 }
 

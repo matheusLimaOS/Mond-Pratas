@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "consign": "^0.1.6",
     "cors": "^2.8.5",
     "ejs": "^2.7.1",
     "esm": "^3.2.25",
@@ -17,6 +18,8 @@
     "express-session": "^1.17.1",
     "handlebars": "^4.7.6",
     "js-sha1": "^0.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mogoose": "0.0.1-security",
     "mysql": "^2.18.1",
     "node-popup": "^0.1.14",
     "sequelize": "^6.3.4"

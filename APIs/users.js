@@ -32,7 +32,7 @@ app.post("/users/login",(req, res) => {
                     req.session.user = {
                         username: user
                     }
-                    console.log(req.session.user);
+                    console.log(req.session);
                     res.status(200);
                     res.json({});
                 }

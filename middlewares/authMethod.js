@@ -4,6 +4,8 @@ function logadaum(req,res,next){
     }
     else{
         console.log(req.session);
+        res.status(401);
+        res.json({});
     }
 }
 
